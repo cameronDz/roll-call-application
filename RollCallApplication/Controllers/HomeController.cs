@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RollCallApplication.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,20 +11,26 @@ namespace RollCallApplication.Controllers
     {
         public ActionResult Index()
         {
+            ViewBag.Title = "Home";
+            ViewBag.Message = "Application Home Page.";
+            ViewBag.GitHubRepositoryAddress = Settings.Default.GitHubRepositoryAddress;
             return View();
         }
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
-
+            ViewBag.Title = "About";
+            ViewBag.Message = "Application About Page.";
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
-
+            ViewBag.Title = "Contact";
+            ViewBag.Message = "Application Contact Page.";
+            ViewBag.CreatorContactEmail = Settings.Default.CreatorEmail;
+            ViewBag.CreatorContactEmailLink = "mailto:" + Settings.Default.CreatorEmail;
+            ViewBag.GitHubRepositoryAddress = Settings.Default.GitHubRepositoryAddress;
             return View();
         }
     }
