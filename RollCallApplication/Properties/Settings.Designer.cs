@@ -52,7 +52,7 @@ namespace RollCallApplication.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockIndexFlagTurnedOn {
             get {
                 return ((bool)(this["LockIndexFlagTurnedOn"]));
@@ -61,10 +61,10 @@ namespace RollCallApplication.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("innovationForum")]
-        public string IndexPassword {
+        [global::System.Configuration.DefaultSettingValueAttribute("rollCallApplication")]
+        public string IndexPasscode {
             get {
-                return ((string)(this["IndexPassword"]));
+                return ((string)(this["IndexPasscode"]));
             }
         }
     }

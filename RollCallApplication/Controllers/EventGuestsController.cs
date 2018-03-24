@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using RollCallApplication.Attribute;
 using RollCallApplication.DAL;
 using RollCallApplication.Models;
 using RollCallApplication.Properties;
@@ -18,7 +19,32 @@ namespace RollCallApplication.Controllers
     {
         private RollCallContext db = new RollCallContext();
 
+        // Passcode methods source: https://github.com/balexandre/Stackoverflow-Question-12378445 
+        public ActionResult PasscodeCheck()
+        {
+            Trace.WriteLine("GET EventGuests/PasscodeCheck");
+            ViewBag.Title = "Passcode Check";
+            ViewBag.Message = "Enter passcode to view List/Edit/Delete pages.";
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PasscodeCheck(string password)
+        {
+            Trace.WriteLine("POST EventGuests/PasscodeCheck");
+            if (Settings.Default.IndexPasscode.Equals(password))
+            {
+                Session["rollCallApp-Authentication"] = Settings.Default.IndexPasscode;
+                return RedirectToAction("Index");
+            }
+            ViewBag.Title = "Passcode Check";
+            ViewBag.Message = "Enter passcode to view List/Edit/Delete pages.";
+            ViewBag.EnteredWrongPasscode = true;
+            return View();
+        }
+
         // GET: EventGuests
+        [SimpleMembership]
         public ActionResult Index()
         {
             Trace.WriteLine("GET EventGuests/Index");
@@ -63,6 +89,7 @@ namespace RollCallApplication.Controllers
         }
 
         // GET: EventGuests/Edit/5
+        [SimpleMembership]
         public ActionResult Edit(int? id)
         {
             Trace.WriteLine("GET EventGuest/Edit");
@@ -104,6 +131,7 @@ namespace RollCallApplication.Controllers
         }
 
         // GET: EventGuests/Delete/5
+        [SimpleMembership]
         public ActionResult Delete(int? id)
         {
             Trace.WriteLine("GET EventGuest/Delete");

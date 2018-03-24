@@ -156,6 +156,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attribute\SimpleMembershipAttribute.cs" />
     <Compile Include="Controllers\EventGuestsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\RollCallContext.cs" />
@@ -163,7 +164,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\EventGuest.cs" />
-    <Compile Include="Models\Password.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -250,6 +250,7 @@
     <Content Include="Views\EventGuests\Create.cshtml" />
     <Content Include="Views\EventGuests\Edit.cshtml" />
     <Content Include="Views\EventGuests\Delete.cshtml" />
+    <Content Include="Views\EventGuests\PasscodeCheck.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,10 +12,10 @@
       <Value Profile="(Default)">https://github.com/cameronDz/roll-call-application</Value>
     </Setting>
     <Setting Name="LockIndexFlagTurnedOn" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="IndexPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">innovationForum</Value>
+    <Setting Name="IndexPasscode" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">rollCallApplication</Value>
     </Setting>
   </Settings>
 </SettingsFile>

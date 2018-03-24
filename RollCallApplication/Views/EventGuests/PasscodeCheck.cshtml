@@ -1,0 +1,16 @@
+﻿@if (@ViewBag.EnteredWrongPasscode != null)
+{
+    <script>
+        alert("Wrong passcode entered. Retry or return to Guest Check In.");
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+<p>@ViewBag.Message</p>
+@using (Html.BeginForm())
+{
+    <input type="password" name="password" id="password" />
+    <input type="submit" value="Enter Password" />
+}
+
+<p><a class="btn btn-default" href=@Url.Action("Create","EventGuests")>Guest Check In Page</a></p>
