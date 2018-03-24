@@ -12,18 +12,24 @@ String variables so that only some default property settings can be updated and 
 be deployed on Azure. Basic deployment of the application should cost less than $5 for any event
 that has less than 500 guests checking in on a single day.
 
-### Acceptable Development/Task/Wish List for next Pull Request into master branch
-Below are a list of wish list items for updates to the application. 
--[] Create standard feature switch to be used for all new features
--[] Create standard branching schema
--[] Ability to lock EventGuest Index View with basic encrypted password
--[] Graphical display of EventGuest check in traffic for a given day
--[] Paginated list of checked in guests
+## Setting up and deploying customized application
+Add walk through steps on Nuget package manager, Setting Properties configuration, feature flags,
+and Azure deployment for code first.
 
-##### Updates Lists
+## Updates List
+
+#### Accepted Development/Task/Wish List for next Pull Request into master branch
+Below are a list of wish list items for updates to the application. 
+
+-[ ] Create standard feature switch to be used for all new features
+-[ ] Create standard branching schema
+-[ ] Ability to lock EventGuest Index View with basic encrypted password
+-[ ] Graphical display of EventGuest check in traffic for a given day
+-[ ] Paginated list of checked in guests with grid size set in System variables
+-[ ] Create set up steps for pulling, customizing, and deploying application
 
 ###### 23 March 2018
 Basic project commited to git. Features include:
 - Basic Home, About, and Contact page explaining application
 - Event Guest model with controller and view for; Index, Create, Edit, and Delete
-- Ability to pull list of all guests checked in onto PC as .csv file
+- Ability to pull list of all guests checked in onto personal machine as .csv file

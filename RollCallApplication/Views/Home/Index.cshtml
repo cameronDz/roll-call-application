@@ -7,14 +7,20 @@
     <div class="col-md-4">
         <h2>Getting started</h2>
         <p>
-            Customize the application by checking out the GitHub repository.
+            Access the customized guest check in page!
         </p>
-        <p><a class="btn btn-default" href=@ViewBag.GitHubRepositoryAddress>Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href=@Url.Action("Create","EventGuests")>Guest Check In</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>Easily deployable through microsoft Azure portal.</p>
-        <p><a class="btn btn-default" href="https://azure.microsoft.com/en-us/">Learn more &raquo;</a></p>
+        <h2>Customize the App</h2>
+        <p>
+            Customize the application by checking out the GitHub repository.
+            Then easily deploy it through Microsoft's Azure cloud.
+        </p>
+        <p>
+            <a class="btn btn-default" target="_blank" href=@ViewBag.GitHubRepositoryAddress>GitHub Repo &raquo;</a>
+            <a class="btn btn-default" target="_blank" href="https://azure.microsoft.com/en-us/">Azure &raquo;</a>
+        </p>
     </div>
     <div class="col-md-4">
         <h2>Questions...</h2>

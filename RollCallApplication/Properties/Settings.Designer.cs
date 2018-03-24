@@ -43,10 +43,28 @@ namespace RollCallApplication.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://www.github.com")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/cameronDz/roll-call-application")]
         public string GitHubRepositoryAddress {
             get {
                 return ((string)(this["GitHubRepositoryAddress"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LockIndexFlagTurnedOn {
+            get {
+                return ((bool)(this["LockIndexFlagTurnedOn"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("innovationForum")]
+        public string IndexPassword {
+            get {
+                return ((string)(this["IndexPassword"]));
             }
         }
     }

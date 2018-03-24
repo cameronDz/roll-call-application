@@ -13,7 +13,7 @@ namespace RollCallApplication.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void Index()
+        public void Index_ViewCalled_ReturnIsNotNull()
         {
             // Arrange
             HomeController controller = new HomeController();
@@ -26,7 +26,7 @@ namespace RollCallApplication.Tests.Controllers
         }
 
         [TestMethod]
-        public void About()
+        public void About_ViewCalled_ViewBagMessage()
         {
             // Arrange
             HomeController controller = new HomeController();
@@ -35,11 +35,11 @@ namespace RollCallApplication.Tests.Controllers
             ViewResult result = controller.About() as ViewResult;
 
             // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            Assert.AreEqual("Application About Page.", result.ViewBag.Message);
         }
 
         [TestMethod]
-        public void Contact()
+        public void Contact_ViewCalled_ReturnIsNotNull()
         {
             // Arrange
             HomeController controller = new HomeController();
