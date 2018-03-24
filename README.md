@@ -21,12 +21,12 @@ and Azure deployment for code first.
 #### Accepted Development/Task/Wish List for next Pull Request into master branch
 Below are a list of wish list items for updates to the application. 
 
--[ ] Create standard feature switch to be used for all new features
--[ ] Create standard branching schema
--[ ] Ability to lock EventGuest Index View with basic encrypted password
--[ ] Graphical display of EventGuest check in traffic for a given day
--[ ] Paginated list of checked in guests with grid size set in System variables
--[ ] Create set up steps for pulling, customizing, and deploying application
+- [ ] Create standard feature switch to be used for all new features
+- [ ] Create standard branching schema
+- [ ] Ability to lock EventGuest Index View with basic encrypted password
+- [ ] Graphical display of EventGuest check in traffic for a given day
+- [ ] Paginated list of checked in guests with grid size set in System variables
+- [ ] Create set up steps for pulling, customizing, and deploying application
 
 ###### 23 March 2018
 Basic project commited to git. Features include:
