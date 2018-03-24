@@ -7,10 +7,14 @@
 
 <h2>@ViewBag.Title</h2>
 <p>@ViewBag.Message</p>
-@using (Html.BeginForm())
-{
-    <input type="password" name="password" id="password" />
-    <input type="submit" value="Enter Password" />
-}
-
-<p><a class="btn btn-default" href=@Url.Action("Create","EventGuests")>Guest Check In Page</a></p>
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        <div class=" row form-group">
+            <input type="password" name="password" id="password" />
+            <input type="submit" value="Enter Password" />
+        </div>
+    }
+</div>
+<br />
+<p><a class="btn btn-default btn-lg" href=@Url.Action("Create","EventGuests")>Return to Guest Check In Page</a></p>

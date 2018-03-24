@@ -4,9 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using RollCallApplication.Attribute;
 using RollCallApplication.DAL;
@@ -24,7 +22,8 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET EventGuests/PasscodeCheck");
             ViewBag.Title = "Passcode Check";
-            ViewBag.Message = "Enter passcode to view List/Edit/Delete pages.";
+            ViewBag.Message = "Must enter passcode to view any list of guests and make edit/deletions" +
+                "to guests that have checked in through application";
             return View();
         }
 
