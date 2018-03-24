@@ -23,15 +23,11 @@ to customize the application out of the box.
 
 | Setting Name | Type | Default Value | Description |
 | :--- | :---: | :--- | :--- |
-| EventName | String | "Event Name" | Name of event application will be used for. Name appears 
-in various spots throughout the application. |
+| EventName | String | "Event Name" | Name of event application will be used for. Name appears in various spots throughout the application. |
 | CreatorEmail | String | "CameronDziurgot@gmail.com" | Email of the application creator. |
-| GitHubRepositoryAddress | String | "https://github.com/cameronDz/roll-call-application" | 
-Repository where the application can be found. |
-| LockIndexFlagTurnedOn | bool | True | Feature flag for creating authentication that locks 
-the Views in EventGuests for Index, Edit, and Delete, behind a passcode. |
-| IndexPasscode | String | "rollCallApplication" | Passcode used when the Passcode feature flag 
-is turned on. |
+| GitHubRepositoryAddress | String | "https://github.com/cameronDz/roll-call-application" | Repository where the application can be found. |
+| LockIndexFlagTurnedOn | bool | True | Feature flag for creating authentication that locks the Views in EventGuests for Index, Edit, and Delete, behind a passcode. |
+| IndexPasscode | String | "rollCallApplication" | Passcode used when the Passcode feature flag is turned on. |
 
 #### Deploying Application in Microsoft's Azure cloud
 
