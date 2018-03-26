@@ -17,5 +17,8 @@
     <Setting Name="IndexPasscode" Type="System.String" Scope="Application">
       <Value Profile="(Default)">rollCallApplication</Value>
     </Setting>
+    <Setting Name="TimeZoneOffsetHours" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

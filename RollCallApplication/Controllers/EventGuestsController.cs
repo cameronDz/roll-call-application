@@ -76,7 +76,7 @@ namespace RollCallApplication.Controllers
             ViewBag.Message = "Checked In Page.";
             if (ModelState.IsValid)
             {
-                eventGuest.TimeOfCheckIn = DateTime.Now.ToLocalTime();
+                eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
                 db.EventGuests.Add(eventGuest);
                 db.SaveChanges();
                 ModelState.Clear();
@@ -116,7 +116,7 @@ namespace RollCallApplication.Controllers
         public ActionResult Edit([Bind(Include = "GuestId,FirstName,LastName,Email")] EventGuest eventGuest)
         {
             Trace.WriteLine("POST EventGuest/Edit");
-            eventGuest.TimeOfCheckIn = DateTime.Now.ToLocalTime();
+            eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet(); 
             if (ModelState.IsValid)
             {
                 db.Entry(eventGuest).State = EntityState.Modified;
@@ -190,6 +190,13 @@ namespace RollCallApplication.Controllers
             csv.Append(columnFour).Append(',');
             csv.AppendLine();
             return csv;
+        }
+
+        private DateTime GetCurrentDateTimeWithOffSet()
+        {
+            DateTime currentDateTime = DateTime.Now.ToUniversalTime();
+            TimeSpan utcOffset = new TimeSpan(Settings.Default.TimeZoneOffsetHours, 0, 0);
+            return currentDateTime.Subtract(utcOffset);
         }
 
         protected override void Dispose(bool disposing)

@@ -28,20 +28,36 @@ to customize the application out of the box.
 | GitHubRepositoryAddress | String | "https://github.com/cameronDz/roll-call-application" | Repository where the application can be found. |
 | LockIndexFlagTurnedOn | bool | True | Feature flag for creating authentication that locks the Views in EventGuests for Index, Edit, and Delete, behind a passcode. |
 | IndexPasscode | String | "rollCallApplication" | Passcode used when the Passcode feature flag is turned on. |
+| TimeZoneOffSetHours | int | 4 | Used to set the timezone offset from UTC to where the event is being held. |
 
 #### Deploying Application in Microsoft's Azure cloud
+The following setup is done in Visual Studio 2017. Deploying the application for a 1-day event 
+should cost ~$5 at the most. It is assumed whoever is going through these steps already has a 
+Azure account connected to their IDE.
+1. Right-click the RollCallApplication project and select "Publish"
+2. For Azure App Serivce, select "Create New", then select and press "Create New"
+Uner Resource Group, press "New..."
+3. Choose a Location near your region. The application could run on B1 teir for pretty much any size event < 1000 people.
+4. Under "Explore additional Azure services", select "Create a SQL Database"
+5. For SQL Server, press "New..." 
+6. Set the Admin username and password.
+7. Set the connection string name to match the connection string in the RollCallContext.cs class.
+8. Press "Create". This may take several minutes.
+9. After the resources are created, a success message should appear in the IDE, with a button to "Publish".
+10. Press "Publish". The first deploy may also take several minutes.
 
 ## Updates List
 
 #### Accepted Development/Task/Wish List for next Pull Request into master branch
 Below are a list of wish list items for updates to the application. 
 
-- [x] Create standard feature switch to be used for all new features
-- [x] Ability to lock EventGuest Index View with basic encrypted password
-- [x] Create set up steps for pulling and customizing application through Settings 
-- [ ] Graphical display of EventGuest check in traffic for a given day
+- [X] Create set up steps for deploying application
+- [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
-- [ ] Create set up steps for deploying application
+
+###### 25 March 2018
+- Create set up steps for deploying application
+- Set connection string configuration for deploying on Azure
 
 ###### 24 March 2018
 - Ability to lock EventGuest Index View with basic encrypted password

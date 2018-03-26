@@ -67,5 +67,14 @@ namespace RollCallApplication.Properties {
                 return ((string)(this["IndexPasscode"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int TimeZoneOffsetHours {
+            get {
+                return ((int)(this["TimeZoneOffsetHours"]));
+            }
+        }
     }
 }
