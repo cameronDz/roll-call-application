@@ -9,7 +9,7 @@ namespace RollCallApplication.DAL
 {
     public class RollCallContext : DbContext
     {
-        public RollCallContext() : base("rollCallConnectionString")
+        public RollCallContext() : base("RollCallContext")
         {
         }
         public DbSet<EventGuest> EventGuests { get; set; }
