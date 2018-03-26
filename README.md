@@ -51,9 +51,11 @@ Uner Resource Group, press "New..."
 #### Accepted Development/Task/Wish List for next Pull Request into master branch
 Below are a list of wish list items for updates to the application. 
 
-- [X] Create set up steps for deploying application
 - [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
+
+###### 26 March 2018
+- Removed unused JavaScript files
 
 ###### 25 March 2018
 - Create set up steps for deploying application
