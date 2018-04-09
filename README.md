@@ -27,7 +27,7 @@ to customize the application out of the box.
 | CreatorEmail | String | "CameronDziurgot@gmail.com" | Email of the application creator. |
 | GitHubRepositoryAddress | String | "https://github.com/cameronDz/roll-call-application" | Repository where the application can be found. |
 | LockIndexFlagTurnedOn | bool | True | Feature flag for creating authentication that locks the Views in EventGuests for Index, Edit, and Delete, behind a passcode. |
-| IndexPasscode | String | "rollCallApplication" | Passcode used when the Passcode feature flag is turned on. |
+| AdminPasscode | String | "rollCallAdmin" | Passcode used when the Passcode feature flag is turned on for Admin access. |
 | TimeZoneOffSetHours | int | 4 | Used to set the timezone offset from UTC to where the event is being held. |
 
 #### Deploying Application in Microsoft's Azure cloud
@@ -53,6 +53,9 @@ Below are a list of wish list items for updates to the application.
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
+
+###### 08 April 2018
+- Added boolean to data model for preregistration status
 
 ###### 26 March 2018
 - Removed unused JavaScript files

@@ -12,7 +12,7 @@ namespace RollCallApplication.Attribute
             {
                 //redirect if not authenticated
                 if (filterContext.HttpContext.Session["rollCallApp-Authentication"] == null ||
-                    !((Settings.Default.IndexPasscode).Equals(
+                    !((Settings.Default.AdminPasscode).Equals(
                         filterContext.HttpContext.Session["rollCallApp-Authentication"])))
                 {
                     //use the current url for the redirect
@@ -20,7 +20,7 @@ namespace RollCallApplication.Attribute
 
                     //send them off to the login page
                     string redirectUrl = string.Format("?ReturnUrl={0}", redirectOnSuccess);
-                    string loginUrl = "/EventGuests/PasscodeCheck" + redirectUrl;
+                    string loginUrl = "/EventGuests/AdminPasscodeCheck" + redirectUrl;
                     filterContext.HttpContext.Response.Redirect(loginUrl, true);
                 }
             }

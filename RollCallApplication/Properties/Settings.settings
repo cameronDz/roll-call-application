@@ -14,8 +14,8 @@
     <Setting Name="LockIndexFlagTurnedOn" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="IndexPasscode" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">rollCallApplication</Value>
+    <Setting Name="AdminPasscode" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">rollCallAdmin</Value>
     </Setting>
     <Setting Name="TimeZoneOffsetHours" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">4</Value>

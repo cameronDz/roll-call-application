@@ -16,7 +16,7 @@ namespace RollCallApplication
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "EventGuests", action = "Create", id = UrlParameter.Optional }
+                defaults: new { controller = "EventGuests", action = "IndexOfAllGuests", id = UrlParameter.Optional }
             );
         }
     }

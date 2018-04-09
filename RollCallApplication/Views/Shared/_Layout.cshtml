@@ -18,10 +18,12 @@
                 </button>
                 @Html.ActionLink("Roll Call Application", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse">                
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Roll Call", "Create", "EventGuests")</li>
-                    <li>@Html.ActionLink("Guest List", "Index", "EventGuests")</li>
+                    <li>@Html.ActionLink("Preregistered", "IndexOfAllGuests", "EventGuests")</li>
+                    <li>@Html.ActionLink("Register/Check In", "RegisterGuest", "EventGuests")</li>
+                    <li>@Html.ActionLink("View Check Ins", "IndexOfCheckedInGuests", "EventGuests")</li>
+                    <li>@Html.ActionLink("Load Registrants", "LoadRegistrationList", "EventGuests")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
             </div>

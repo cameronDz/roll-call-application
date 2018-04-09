@@ -18,9 +18,9 @@ namespace RollCallApplication.Controllers
         private RollCallContext db = new RollCallContext();
 
         // Passcode methods source: https://github.com/balexandre/Stackoverflow-Question-12378445 
-        public ActionResult PasscodeCheck()
+        public ActionResult AdminPasscodeCheck()
         {
-            Trace.WriteLine("GET EventGuests/PasscodeCheck");
+            Trace.WriteLine("GET EventGuests/AdminPasscodeCheck");
             ViewBag.Title = "Passcode Check";
             ViewBag.Message = "Must enter passcode to view any list of guests and make edit/deletions" +
                 "to guests that have checked in through application";
@@ -28,13 +28,13 @@ namespace RollCallApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult PasscodeCheck(string password)
+        public ActionResult AdminPasscodeCheck(string password)
         {
-            Trace.WriteLine("POST EventGuests/PasscodeCheck");
-            if (Settings.Default.IndexPasscode.Equals(password))
+            Trace.WriteLine("POST EventGuests/AdminPasscodeCheck");
+            if (Settings.Default.AdminPasscode.Equals(password))
             {
-                Session["rollCallApp-Authentication"] = Settings.Default.IndexPasscode;
-                return RedirectToAction("Index");
+                Session["rollCallApp-Authentication"] = Settings.Default.AdminPasscode;
+                return RedirectToAction("IndexOfAllGuests");
             }
             ViewBag.Title = "Passcode Check";
             ViewBag.Message = "Enter passcode to view List/Edit/Delete pages.";
@@ -43,8 +43,18 @@ namespace RollCallApplication.Controllers
         }
 
         // GET: EventGuests
+        public ActionResult IndexOfAllGuests()
+        {
+            Trace.WriteLine("GET EventGuests/Index");
+            ViewBag.Title = "Attendees";
+            ViewBag.Message = "List of Attendees.";
+            ViewBag.EventName = Settings.Default.EventName;
+            return View(db.EventGuests.OrderByDescending(g => g.TimeOfCheckIn).ToList());
+        }
+
+        // GET: EventGuests
         [SimpleMembership]
-        public ActionResult Index()
+        public ActionResult IndexOfCheckedInGuests()
         {
             Trace.WriteLine("GET EventGuests/Index");
             ViewBag.Title = "Attendees";
@@ -53,9 +63,9 @@ namespace RollCallApplication.Controllers
             ViewBag.TotalUniqueGuests = db.EventGuests.GroupBy(g => g.Email).Count();
             return View(db.EventGuests.OrderByDescending(g => g.TimeOfCheckIn).ToList());
         }
-        
+
         // GET: EventGuests/Create
-        public ActionResult Create()
+        public ActionResult RegisterGuest()
         {
             Trace.WriteLine("GET /Home/Create");
             ViewBag.Title = "Check In";
@@ -69,7 +79,7 @@ namespace RollCallApplication.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "GuestId,FirstName,LastName,Email")] EventGuest eventGuest)
+        public ActionResult RegisterGuest([Bind(Include = "GuestId,FirstName,LastName,Email")] EventGuest eventGuest)
         {
             Trace.WriteLine("POST EventGuest/Create");
             ViewBag.Title = "Check In";
@@ -87,27 +97,34 @@ namespace RollCallApplication.Controllers
             return View(eventGuest);
         }
 
-        // GET: EventGuests/Edit/5
         [SimpleMembership]
+        public ActionResult LoadRegistrationList()
+        {
+            ViewBag.Title = "Load Registration List";
+            ViewBag.Message = "Load Registration List Page";
+            return View();
+        }
+        
+        // GET: EventGuests/Edit/5
         public ActionResult Edit(int? id)
         {
             Trace.WriteLine("GET EventGuest/Edit");
-            ViewBag.Title = "Edit Guest";
-            ViewBag.Message = "Edit Page.";
+            ViewBag.Title = "Check In Guest";
+            ViewBag.Message = "Check In Guest Page.";
             if (id == null)
             {
                 ViewBag.CouldNotFindGuest = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexOfAllGuests");
             }
             EventGuest eventGuest = db.EventGuests.Find(id);
             if (eventGuest == null)
             {
                 ViewBag.CouldNotFindGuest = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexOfAllGuests");
             }
             return View(eventGuest);
         }
-
+        
         // POST: EventGuests/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -121,11 +138,11 @@ namespace RollCallApplication.Controllers
             {
                 db.Entry(eventGuest).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexOfAllGuests");
             }
             ViewBag.CouldNotEditGuest = true;
-            ViewBag.Title = "Edit Guest";
-            ViewBag.Message = "Edit Page.";
+            ViewBag.Title = "Check In Guest";
+            ViewBag.Message = "Check In Guest Page.";
             return View(eventGuest);
         }
 
@@ -139,13 +156,13 @@ namespace RollCallApplication.Controllers
             if (id == null)
             {
                 ViewBag.CouldNotFindGuest = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexOfCheckedInGuests");
             }
             EventGuest eventGuest = db.EventGuests.Find(id);
             if (eventGuest == null)
             {
                 ViewBag.CouldNotFindGuest = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexOfCheckedInGuests");
             }
             return View(eventGuest);
         }
@@ -159,7 +176,7 @@ namespace RollCallApplication.Controllers
             EventGuest eventGuest = db.EventGuests.Find(id);
             db.EventGuests.Remove(eventGuest);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexOfCheckedInGuests");
         }
 
         /* Source: https://stackoverflow.com/questions/13337076/export-database-data-to-csv-from-view-by-date-range-asp-net-mvc3 */
@@ -170,10 +187,20 @@ namespace RollCallApplication.Controllers
             IEnumerable<EventGuest> rows = db.EventGuests;
 
             StringBuilder csv = new StringBuilder();
-            csv = WriteLineInCsvStringBuilder(csv, "First Name", "Last Name", "Email", "Check in Time");
+            csv = WriteLineInCsvStringBuilder(csv, 
+                "First Name", 
+                "Last Name", 
+                "Email", 
+                "Preregistered", 
+                "Check in Time");
             foreach (EventGuest row in rows)
             {
-                WriteLineInCsvStringBuilder(csv, row.FirstName, row.LastName, row.Email, row.TimeOfCheckIn.ToString());
+                WriteLineInCsvStringBuilder(csv, 
+                    row.FirstName, 
+                    row.LastName, 
+                    row.Email, 
+                    row.Preregistered.ToString(), 
+                    row.TimeOfCheckIn.ToString());
             }
 
             var data = Encoding.UTF8.GetBytes(csv.ToString());
@@ -182,12 +209,13 @@ namespace RollCallApplication.Controllers
         }
 
         private StringBuilder WriteLineInCsvStringBuilder(StringBuilder csv, String columnOne,
-                String columnTwo, String columnThree, String columnFour)
+                String columnTwo, String columnThree, String columnFour, String columnFive)
         {
             csv.Append(columnOne).Append(',');
             csv.Append(columnTwo).Append(',');
             csv.Append(columnThree).Append(',');
             csv.Append(columnFour).Append(',');
+            csv.Append(columnFive).Append(',');
             csv.AppendLine();
             return csv;
         }

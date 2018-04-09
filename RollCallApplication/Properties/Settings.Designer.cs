@@ -61,10 +61,10 @@ namespace RollCallApplication.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("rollCallApplication")]
-        public string IndexPasscode {
+        [global::System.Configuration.DefaultSettingValueAttribute("rollCallAdmin")]
+        public string AdminPasscode {
             get {
-                return ((string)(this["IndexPasscode"]));
+                return ((string)(this["AdminPasscode"]));
             }
         }
         

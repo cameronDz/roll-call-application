@@ -1,5 +1,21 @@
 ﻿@model IEnumerable<RollCallApplication.Models.EventGuest>
 
+@if (ViewBag.SuccessfulCheckIn != null)
+{
+    <script>
+        alert("Successfully checked into the event!")
+    </script>
+}
+@if (ViewBag.FailedCheckIn != null)
+{
+    <script>
+        alert("Unable to check into event. Please try again..")
+    </script>
+}
+<div class="jumbotron">
+    <h1>Welcome to the @ViewBag.EventName!!</h1>
+</div>
+
 <h2>@ViewBag.Title</h2>
 
 <table class="table">
@@ -12,9 +28,6 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TimeOfCheckIn)
         </th>
         <th></th>
     </tr>
@@ -32,17 +45,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TimeOfCheckIn)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.GuestId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.GuestId })
+                @Html.ActionLink("Check In", "Edit", new { id = item.GuestId })
             </td>
         </tr>
     }
 
 </table>
-
-<p>Total Guests checked in: @ViewBag.TotalGuests</p>
-<p>Total Unique Guests checked in: @ViewBag.TotalUniqueGuests</p>
-<p>@Html.ActionLink("Download Attendee List", "DownloadListAsCsv", "EventGuests")</p>
