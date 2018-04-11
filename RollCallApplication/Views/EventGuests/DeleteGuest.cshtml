@@ -1,8 +1,8 @@
 ﻿@model RollCallApplication.Models.EventGuest
 
 <h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Event Guest</h4>
     <hr />
@@ -46,7 +46,7 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "IndexOfCheckedInGuests")
+            @Html.ActionLink("Back to Guest List", "GuestListIndex")
         </div>
     }
 </div>

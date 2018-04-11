@@ -21,7 +21,7 @@ namespace RollCallApplication.Models
         public String Email { get; set; }
         [Display(Name = "Check In Time")]
         public DateTime? TimeOfCheckIn { get; set; }
-        [Display(Name = "Pre-Registered")]
+        [Display(Name = "Preregister")]
         public Boolean Preregistered { get; set; }
     }
 }

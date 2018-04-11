@@ -217,13 +217,14 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\EventGuests\IndexOfAllGuests.cshtml" />
+    <Content Include="Views\EventGuests\PreregisteredCheckInList.cshtml" />
     <Content Include="Views\EventGuests\RegisterGuest.cshtml" />
-    <Content Include="Views\EventGuests\Edit.cshtml" />
-    <Content Include="Views\EventGuests\Delete.cshtml" />
+    <Content Include="Views\EventGuests\EditGuest.cshtml" />
+    <Content Include="Views\EventGuests\DeleteGuest.cshtml" />
     <Content Include="Views\EventGuests\AdminPasscodeCheck.cshtml" />
-    <Content Include="Views\EventGuests\IndexOfCheckedInGuests.cshtml" />
+    <Content Include="Views\EventGuests\GuestListIndex.cshtml" />
     <Content Include="Views\EventGuests\LoadRegistrationList.cshtml" />
+    <Content Include="Views\EventGuests\AdministratorIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

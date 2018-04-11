@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<RollCallApplication.Models.EventGuest>
-
 @if (ViewBag.SuccessfulCheckIn != null)
 {
     <script>
         alert("Successfully checked into the event!")
     </script>
 }
-@if (ViewBag.FailedCheckIn != null)
+else if (ViewBag.FailedCheckIn != null)
 {
     <script>
         alert("Unable to check into event. Please try again..")
@@ -17,6 +16,7 @@
 </div>
 
 <h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
 
 <table class="table">
     <tr>
@@ -45,9 +45,21 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.ActionLink("Check In", "Edit", new { id = item.GuestId })
+                @using (Html.BeginForm("PreregisteredCheckInList", "EventGuests", new { id = item.GuestId }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-actions no-color">
+                        @if (item.TimeOfCheckIn == null)
+                        {
+                            <input type="submit" value="Check In" class="btn btn-primary" />
+                        }
+                        else
+                        {
+                            <input type="submit" value="Re-Check In" class="btn btn-default" />
+                        }
+                    </div>
+                }
             </td>
         </tr>
     }
-
 </table>

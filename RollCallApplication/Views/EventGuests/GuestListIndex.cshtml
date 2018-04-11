@@ -1,14 +1,8 @@
 ﻿@model IEnumerable<RollCallApplication.Models.EventGuest>
 
-@{
-    ViewBag.Title = "IndexOfCheckedInGuests";
-}
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
 
-<h2>Index Of Checked In Guests</h2>
-
-<p>
-    @Html.ActionLink("Create New", "RegisterGuest")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -48,13 +42,12 @@
                 @Html.DisplayFor(modelItem => item.Preregistered)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.GuestId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.GuestId })
+                @Html.ActionLink("Edit", "EditGuest", new { id = item.GuestId }) |
+                @Html.ActionLink("Delete", "DeleteGuest", new { id = item.GuestId })
             </td>
         </tr>
     }
 </table>
 
-<p>Total Guests checked in: @ViewBag.TotalGuests</p>
-<p>Total Unique Guests checked in: @ViewBag.TotalUniqueGuests</p>
+<p>Total Guests checked in: @ViewBag.TotalCheckedInGuests</p>
 <p>@Html.ActionLink("Download Attendee List", "DownloadListAsCsv", "EventGuests")</p>
