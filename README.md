@@ -53,6 +53,13 @@ Below are a list of wish list items for updates to the application.
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
+- [ ] Upload preregistered guests through an csv file
+- [ ] Drag and drop csv file
+
+###### 11 April 2018
+- Added list for checking in preregistered guest and seperate page for registering and checking in guests
+- Added administrator landing page for accessing authenticated-limited views
+- Updated all ViewBag variables to be useful and accurate
 
 ###### 08 April 2018
 - Added boolean to data model for preregistration status
