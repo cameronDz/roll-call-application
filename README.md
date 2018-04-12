@@ -53,8 +53,11 @@ Below are a list of wish list items for updates to the application.
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
-- [ ] Upload preregistered guests through an csv file
-- [ ] Drag and drop csv file
+- [ ] Ability to decide how to sort Guest lists
+
+###### 12 April 2018
+- Added ability to drag and drop .csv file into web application and upload to server
+- Added ability to break down .csv file uploaded to server and turn into Event Guests in database
 
 ###### 11 April 2018
 - Added list for checking in preregistered guest and seperate page for registering and checking in guests

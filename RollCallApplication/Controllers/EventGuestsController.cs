@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
+using LumenWorks.Framework.IO.Csv;
 using RollCallApplication.Attribute;
 using RollCallApplication.DAL;
 using RollCallApplication.Models;
@@ -107,8 +110,7 @@ namespace RollCallApplication.Controllers
             if (ModelState.IsValid)
             {
                 if(eventGuest.Preregistered == false) eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
-                db.EventGuests.Add(eventGuest);
-                db.SaveChanges();
+                addEventGuestToDbContext(eventGuest);
                 ModelState.Clear();
                 if (eventGuest.Preregistered == false) ViewBag.SuccessfulCheckIn = true;
                 else ViewBag.SuccessfulPreregister = true;
@@ -125,6 +127,102 @@ namespace RollCallApplication.Controllers
             ViewBag.Title = "Load Registration";
             ViewBag.Message = "Load Registration List through .csv file.";
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LoadRegistrationList(HttpPostedFileBase upload)
+        {
+            Trace.WriteLine("POST EventGuests/LoadRegistrationList");
+            ViewBag.Title = "Load Registration";
+            ViewBag.Message = "Load Registration List through .csv file.";
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("File", "Failed Upload. Error on in table.");
+                return View();
+            }
+            if (upload == null || upload.ContentLength <= 0)
+            {
+                ModelState.AddModelError("File", "Failed Upload. Upload never arrived.");
+                return View();
+            }
+            if (!upload.FileName.EndsWith(".csv"))
+            {
+                String errorMessage = "Failed Upload. Unable to load registrants due to upload not being .csv file.";
+                ModelState.AddModelError("File", errorMessage);
+                return View();
+            }
+            DataTable csvTable = createNewDataTableFromUpload(upload);
+            int[] firstLastEmailArray = createIntArrayForFirstLastEmailColumns(csvTable);
+            if (intArrayHasNegativeValues(firstLastEmailArray))
+            {
+                String errorMessage = "Failed Upload. Unable to load registrants due to column name issue is .csv file.";
+                ModelState.AddModelError("File", errorMessage);
+                return View();
+            }
+            int count = 0;
+            foreach (DataRow row in csvTable.Rows)
+            {
+                EventGuest tableGuest = createEventGuestFromRowData(row, firstLastEmailArray);
+                addEventGuestToDbContext(tableGuest);
+                count++;
+            }
+            ViewBag.SuccessfulUploadMessage = true;
+            ViewBag.RegisteredGuestCount = count;
+            return View(new DataTable());
+        }
+        
+        private DataTable createNewDataTableFromUpload(HttpPostedFileBase upload)
+        {
+            Stream stream = upload.InputStream;
+            DataTable csvTable = new DataTable();
+            using (CsvReader csvReader =
+                new CsvReader(new StreamReader(stream), true))
+            {
+                csvTable.Load(csvReader);
+            }
+            return csvTable;
+        }
+
+        private int[] createIntArrayForFirstLastEmailColumns(DataTable csvTable)
+        {
+            int[] array = { -1, -1, -1 };
+            foreach (DataColumn col in csvTable.Columns)
+            {
+                if ("first name".Equals(col.ColumnName.ToLower()))
+                    array[0] = csvTable.Columns.IndexOf(col);
+                if ("last name".Equals(col.ColumnName.ToLower()))
+                    array[1] = csvTable.Columns.IndexOf(col);
+                if ("email".Equals(col.ColumnName.ToLower()))
+                    array[2] = csvTable.Columns.IndexOf(col);
+            }
+            return array;
+        }
+
+        private Boolean intArrayHasNegativeValues(int[] array)
+        {
+            foreach(int i in array) if( i < 0) return true;
+            return false;
+        }
+
+        private EventGuest createEventGuestFromRowData(DataRow row, int[] firstLastEmailArray)
+        {
+            EventGuest guest = new EventGuest();
+            guest.FirstName = row.ItemArray.ElementAt(firstLastEmailArray[0]).ToString();
+            guest.LastName = row.ItemArray.ElementAt(firstLastEmailArray[1]).ToString();
+            guest.Email = row.ItemArray.ElementAt(firstLastEmailArray[2]).ToString();
+            guest.Preregistered = true;
+            String rowString = row.ItemArray.ElementAt(firstLastEmailArray[0]).ToString() + " " +
+                row.ItemArray.ElementAt(firstLastEmailArray[1]).ToString() + " " + 
+                row.ItemArray.ElementAt(firstLastEmailArray[2]).ToString();
+            Trace.WriteLine(rowString);
+            return guest;
+        }
+
+        private void addEventGuestToDbContext(EventGuest guest)
+        {
+            db.EventGuests.Add(guest);
+            db.SaveChanges();
         }
 
         [SimpleMembership]
