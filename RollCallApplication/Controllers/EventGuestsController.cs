@@ -106,6 +106,7 @@ namespace RollCallApplication.Controllers
             Trace.WriteLine("POST /EventGuests/RegisterGuest");
             ViewBag.Title = "Register";
             ViewBag.Message = "Register or Check In an unregistered Guest for Event.";
+            ViewBag.EventName = Settings.Default.EventName;
             ViewBag.FailedCheckInPreregister = true;
             if (ModelState.IsValid)
             {
