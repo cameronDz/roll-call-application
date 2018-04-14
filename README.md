@@ -54,6 +54,7 @@ Below are a list of wish list items for updates to the application.
 - [ ] Graphical display of Event Guest check in traffic for a given day
 - [ ] Paginated list of checked in guests with grid size set in System variables
 - [ ] Ability to decide how to sort Guest lists
+- [ ] Page that randomly cycles through a selected number of guests and lands on one
 
 ###### 12 April 2018
 - Added ability to drag and drop .csv file into web application and upload to server
