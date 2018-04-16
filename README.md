@@ -55,6 +55,10 @@ Below are a list of wish list items for updates to the application.
 - [ ] Paginated list of checked in guests with grid size set in System variables
 - [ ] Ability to decide how to sort Guest lists
 - [ ] Page that randomly cycles through a selected number of guests and lands on one
+- [ ] Add input field for checked in guest raffle
+
+###### 16 April 2018 
+- Added ability to create a raffle based on guests that have checked in and the time they checked in
 
 ###### 12 April 2018
 - Added ability to drag and drop .csv file into web application and upload to server

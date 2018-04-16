@@ -131,6 +131,7 @@ namespace RollCallApplication.Controllers
         }
 
         [HttpPost]
+        [SimpleMembership]
         [ValidateAntiForgeryToken]
         public ActionResult LoadRegistrationList(HttpPostedFileBase upload)
         {
@@ -336,6 +337,59 @@ namespace RollCallApplication.Controllers
             var data = Encoding.UTF8.GetBytes(csv.ToString());
             string filename = "rollCallExtract-" + DateTime.Now.ToString() + ".csv";
             return File(data, "text/csv", filename);
+        }
+
+        [SimpleMembership]
+        public ActionResult RaffleGuestByCheckIn(int? randomNumber)
+        {
+            Trace.WriteLine("GET EventGuests/RaffleGuestBySignIn");
+            String instructionMessage = "Enter a number between 1 and " + getCheckInCount() + "!";
+            ViewBag.Title = "Raffle";
+            ViewBag.Message = instructionMessage;
+            if(randomNumber == null)
+            {
+                return View();
+            }
+            ViewBag.Message = "Make sure the number you guess is in the ranged..\n" + instructionMessage;
+            if (randomNumber > getCheckInCount() || randomNumber < 1)  return View();
+            try
+            {
+                int nonNullNumber = randomNumber ?? default(int);
+                EventGuest guest = listOfAllGuestsThatHaveACheckInTime().ElementAt(nonNullNumber-1);
+                ViewBag.Message = instructionMessage;
+                ViewBag.Congrats = true;
+                ViewBag.CongratulationsMessage = "Congratulations to " + guest.FirstName + " " + guest.LastName + "!";
+                return View(guest);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Trace.WriteLine(e);
+                return View();
+            }
+            catch (ArgumentNullException e) 
+            {
+                Trace.WriteLine(e);
+                return View();
+            }
+        }
+
+        private int getCheckInCount()
+        {
+            return db.EventGuests.Count(g => g.TimeOfCheckIn != null);
+        }
+
+        private List<EventGuest> listOfAllGuestsThatHaveACheckInTime()
+        {
+            List<EventGuest> guestList = db.EventGuests.ToList();
+            List<EventGuest> checkInList = new List<EventGuest>();
+            foreach (EventGuest g in guestList)
+            {
+                if (g.TimeOfCheckIn != null)
+                {
+                    checkInList.Add(g);
+                }
+            }
+            return checkInList;
         }
 
         private StringBuilder WriteLineInCsvStringBuilder(StringBuilder csv, String columnOne,
