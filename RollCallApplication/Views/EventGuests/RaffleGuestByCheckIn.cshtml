@@ -42,3 +42,8 @@
         </dl>
     </div>
 }
+
+@using (Html.BeginForm("RaffleGuestByCheckIn", "EventGuests", FormMethod.Get)) {  
+    @Html.TextBox("randomNumber", "Enter Number") 
+    <input type="submit" value="Run Raffle" />
+}
