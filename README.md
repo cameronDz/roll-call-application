@@ -52,7 +52,7 @@ Uner Resource Group, press "New..."
 Below are a list of wish list items for updates to the application. 
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
-- [ ] Paginated list of checked in guests with grid size set in System variables
+- [ ] Implement a search bar in check in page
 - [ ] Page that randomly cycles through a selected number of guests and lands on one
 
 ## Change Log
@@ -60,6 +60,7 @@ Below are a list of wish list items for updates to the application.
 ###### 17 April 2018
 - Add input field for checked in guest raffle
 - Ability to decide how to sort Guest lists
+- Add parameter to Preregister list for filtering
 
 ###### 16 April 2018 
 - Added ability to create a raffle based on guests that have checked in and the time they checked in

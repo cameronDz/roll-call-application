@@ -21,13 +21,13 @@ else if (ViewBag.FailedCheckIn != null)
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "PreregisteredCheckInList", new { sortOrder = ViewBag.FirstNameSortParm })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.FirstNameSortParm, searchParam = "" }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "PreregisteredCheckInList", new { sortOrder = ViewBag.LastNameSortParm })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.LastNameSortParm, searchParam = "" }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "PreregisteredCheckInList", new { sortOrder = ViewBag.EmailSortParm })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.EmailSortParm, searchParam = "" }))
         </th>
         <th></th>
     </tr>

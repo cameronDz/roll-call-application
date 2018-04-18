@@ -54,17 +54,22 @@ namespace RollCallApplication.Controllers
             return View();
         }
 
-        public ActionResult PreregisteredCheckInList(String sortOrder)
+        public ActionResult PreregisteredCheckInList(String sortOrder, String searchParam)
         {
-            Trace.WriteLine("GET EventGuests/PreregisterCheckIn sortOrder: " + sortOrder);
+            Trace.WriteLine("GET EventGuests/PreregisterCheckIn sortOrder: " + sortOrder + ", searchParam: " + searchParam);
             ViewBag.Title = "Check In List";
             ViewBag.Message = "Preregister Guest Check In List.";
             ViewBag.EventName = Settings.Default.EventName;
             ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
             ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
             ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
-            return View(fullOrderedListOfGuests(sortOrder));
+            return View(fullOrderedListOfGuests(sortOrder, searchParam));
         }
+
+        //public ActionResult PreregisteredCheckInList(String sortOrder)
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -80,22 +85,23 @@ namespace RollCallApplication.Controllers
             if (id == null)
             {
                 ViewBag.FailedCheckIn = true;
-                return View(fullOrderedListOfGuests(""));
+                return View(fullOrderedListOfGuests("", ""));
             }
             EventGuest eventGuest = db.EventGuests.Find(id);
             if (eventGuest == null)
             {
                 ViewBag.FailedCheckIn = true;
-                return View(fullOrderedListOfGuests(""));
+                return View(fullOrderedListOfGuests("", ""));
             }
             eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
             db.SaveChanges();
             ViewBag.SuccessfulCheckIn = true;
-            return View(fullOrderedListOfGuests(""));
+            return View(fullOrderedListOfGuests("", ""));
         }
 
-        private List<EventGuest> fullOrderedListOfGuests(String sortOrder)
+        private List<EventGuest> fullOrderedListOfGuests(String sortOrder, String searchParam)
         {
+            if(String.IsNullOrEmpty(searchParam)) searchParam = "";
             if(String.IsNullOrEmpty(sortOrder))
             {
                 return db.EventGuests.OrderBy(g => g.LastName).ToList();
