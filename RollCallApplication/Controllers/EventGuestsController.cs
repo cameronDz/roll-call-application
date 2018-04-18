@@ -371,11 +371,16 @@ namespace RollCallApplication.Controllers
         }
 
         [SimpleMembership]
-        public ActionResult RaffleGuestByCheckIn(int? randomNumber)
+        public ActionResult GuessCheckInTime(int? randomNumber)
         {
-            Trace.WriteLine("GET EventGuests/RaffleGuestBySignIn");
+            Trace.WriteLine("GET EventGuests/GuessCheckInTime");
+            ViewBag.Title = "Guess Check In Time";
+            if (listOfAllGuestsThatHaveACheckInTime().Count() < 1)
+            {
+                ViewBag.Message = "No checked in guests. Can not guess a time.";
+                return View();
+            }
             String instructionMessage = "Enter a number between 1 and " + getCheckInCount() + "!";
-            ViewBag.Title = "Raffle";
             ViewBag.Message = instructionMessage;
             if(randomNumber == null)
             {
@@ -389,6 +394,7 @@ namespace RollCallApplication.Controllers
                 EventGuest guest = listOfAllGuestsThatHaveACheckInTime().ElementAt(nonNullNumber-1);
                 ViewBag.Message = instructionMessage;
                 ViewBag.Congrats = true;
+                ViewBag.CheckInGuess = randomNumber;
                 ViewBag.CongratulationsMessage = "Congratulations to " + guest.FirstName + " " + guest.LastName + "!";
                 return View(guest);
             }

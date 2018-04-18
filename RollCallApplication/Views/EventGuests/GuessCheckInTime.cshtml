@@ -1,18 +1,18 @@
 ﻿@model RollCallApplication.Models.EventGuest
-@if (ViewBag.Congrats != null)
+@if (@ViewBag.Congrats != null)
 {
-    <script>
-        alert(@ViewBag.CongratulationsMessage)
+    <script>           
+        alert("@ViewBag.CongratulationsMessage");
     </script>
 }
 
-<h2>Guest Raffle</h2>
+<h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
 
 @if (Model != null)
 {
     <div>
-        <h4>Raffle Winner</h4>
+        <h4>Check In Number @ViewBag.CheckInGuess</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>
@@ -43,7 +43,7 @@
     </div>
 }
 
-@using (Html.BeginForm("RaffleGuestByCheckIn", "EventGuests", FormMethod.Get)) {  
-    @Html.TextBox("randomNumber", "Enter Number") 
+@using (Html.BeginForm("GuessCheckInTime", "EventGuests", FormMethod.Get)) {  
+    @Html.TextBox("randomNumber", "") 
     <input type="submit" value="Run Raffle" />
 }
