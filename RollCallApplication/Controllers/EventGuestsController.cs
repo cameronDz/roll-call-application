@@ -60,6 +60,9 @@ namespace RollCallApplication.Controllers
             ViewBag.Title = "Check In List";
             ViewBag.Message = "Preregister Guest Check In List.";
             ViewBag.EventName = Settings.Default.EventName;
+            ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
+            ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
+            ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
             return View(fullOrderedListOfGuests(sortOrder));
         }
 
@@ -71,6 +74,9 @@ namespace RollCallApplication.Controllers
             ViewBag.Title = "Check In List";
             ViewBag.Message = "Preregister Guest Check In List.";
             ViewBag.EventName = Settings.Default.EventName;
+            ViewBag.FirstNameSortParm = "first_name_ascd";
+            ViewBag.LastNameSortParm = "last_name_desc";
+            ViewBag.EmailSortParm = "email_ascd";
             if (id == null)
             {
                 ViewBag.FailedCheckIn = true;
