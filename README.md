@@ -57,6 +57,9 @@ Below are a list of wish list items for updates to the application.
 
 ## Change Log
 
+###### 18 April 2018 
+- Added custom error page in plain HTML
+
 ###### 17 April 2018
 - Add input field for checked in guest raffle
 - Ability to decide how to sort Guest lists
