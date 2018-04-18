@@ -33,7 +33,7 @@ namespace RollCallApplication.Controllers
         [HttpPost]
         public ActionResult AdminPasscodeCheck(string password)
         {
-            Trace.WriteLine("POST EventGuests/AdminPasscodeCheck");
+            Trace.WriteLine("POST EventGuests/AdminPasscodeCheck password: ***");
             if (Settings.Default.AdminPasscode.Equals(password))
             {
                 Session["rollCallApp-Authentication"] = Settings.Default.AdminPasscode;
@@ -56,7 +56,7 @@ namespace RollCallApplication.Controllers
 
         public ActionResult PreregisteredCheckInList(String sortOrder)
         {
-            Trace.WriteLine("GET EventGuests/PreregisterCheckIn");
+            Trace.WriteLine("GET EventGuests/PreregisterCheckIn sortOrder: " + sortOrder);
             ViewBag.Title = "Check In List";
             ViewBag.Message = "Preregister Guest Check In List.";
             ViewBag.EventName = Settings.Default.EventName;
@@ -70,7 +70,7 @@ namespace RollCallApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PreregisteredCheckInList(int? id)
         {
-            Trace.WriteLine("POST EventGuests/PreregisterCheckIn");
+            Trace.WriteLine("POST EventGuests/PreregisterCheckIn id: " + id);
             ViewBag.Title = "Check In List";
             ViewBag.Message = "Preregister Guest Check In List.";
             ViewBag.EventName = Settings.Default.EventName;
@@ -134,7 +134,7 @@ namespace RollCallApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RegisterGuest([Bind(Include = "GuestId,FirstName,LastName,Email,Preregistered")] EventGuest eventGuest)
         {
-            Trace.WriteLine("POST /EventGuests/RegisterGuest");
+            Trace.WriteLine("POST /EventGuests/RegisterGuest eventGuest: " + eventGuest.ToString());
             ViewBag.Title = "Register";
             ViewBag.Message = "Register or Check In an unregistered Guest for Event.";
             ViewBag.EventName = Settings.Default.EventName;
@@ -166,7 +166,7 @@ namespace RollCallApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LoadRegistrationList(HttpPostedFileBase upload)
         {
-            Trace.WriteLine("POST EventGuests/LoadRegistrationList");
+            Trace.WriteLine("POST EventGuests/LoadRegistrationList upload: " + upload.ToString());
             ViewBag.Title = "Load Registration";
             ViewBag.Message = "Load Registration List through .csv file.";
             if (!ModelState.IsValid)
@@ -271,7 +271,7 @@ namespace RollCallApplication.Controllers
         [SimpleMembership]
         public ActionResult EditGuest(int? id)
         {
-            Trace.WriteLine("GET EventGuest/EditGuest/");
+            Trace.WriteLine("GET EventGuest/EditGuest int: " + id);
             ViewBag.Title = "Edit Guest";
             ViewBag.Message = "Make edits to a registered guest.";
             if (id == null)
@@ -295,7 +295,7 @@ namespace RollCallApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditGuest([Bind(Include = "GuestId,FirstName,LastName,Email")] EventGuest eventGuest)
         {
-            Trace.WriteLine("POST EventGuest/Edit/");
+            Trace.WriteLine("POST EventGuest/Edit eventGuest: " + eventGuest.ToString());
             if (ModelState.IsValid)
             {
                 db.Entry(eventGuest).State = EntityState.Modified;
@@ -311,7 +311,7 @@ namespace RollCallApplication.Controllers
         [SimpleMembership]
         public ActionResult DeleteGuest(int? id)
         {
-            Trace.WriteLine("GET EventGuest/Delete");
+            Trace.WriteLine("GET EventGuest/Delete id: " + id);
             ViewBag.Title = "Delete Guest";
             ViewBag.Message = "Are you sure you want to delete this event guest?";
             if (id == null)
@@ -333,7 +333,7 @@ namespace RollCallApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Trace.WriteLine("POST EventGuest/DeleteGuest");
+            Trace.WriteLine("POST EventGuest/DeleteConfirmed id: " + id);
             EventGuest eventGuest = db.EventGuests.Find(id);
             db.EventGuests.Remove(eventGuest);
             db.SaveChanges();
@@ -373,7 +373,7 @@ namespace RollCallApplication.Controllers
         [SimpleMembership]
         public ActionResult GuessCheckInTime(int? randomNumber)
         {
-            Trace.WriteLine("GET EventGuests/GuessCheckInTime");
+            Trace.WriteLine("GET EventGuests/GuessCheckInTime randomNumber: " + randomNumber);
             ViewBag.Title = "Guess Check In Time";
             if (listOfAllGuestsThatHaveACheckInTime().Count() < 1)
             {
