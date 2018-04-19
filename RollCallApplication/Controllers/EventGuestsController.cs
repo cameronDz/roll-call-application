@@ -63,13 +63,11 @@ namespace RollCallApplication.Controllers
             ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
             ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
             ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
-            return View(fullOrderedListOfGuests(sortOrder, searchParam));
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.SearchParam = searchParam;
+            List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
+            return View(orderListOfGuests(sortOrder, guestList));
         }
-
-        //public ActionResult PreregisteredCheckInList(String sortOrder)
-        //{
-        //    return View();
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,46 +80,58 @@ namespace RollCallApplication.Controllers
             ViewBag.FirstNameSortParm = "first_name_ascd";
             ViewBag.LastNameSortParm = "last_name_desc";
             ViewBag.EmailSortParm = "email_ascd";
+            ViewBag.SortOrder = "";
+            ViewBag.SearchParam = "";
+            List<EventGuest> fullList = orderListOfGuests("", getEventGuestsWithSearchParam(""));
             if (id == null)
             {
                 ViewBag.FailedCheckIn = true;
-                return View(fullOrderedListOfGuests("", ""));
+                return View(fullList);
             }
             EventGuest eventGuest = db.EventGuests.Find(id);
             if (eventGuest == null)
             {
                 ViewBag.FailedCheckIn = true;
-                return View(fullOrderedListOfGuests("", ""));
+                return View(fullList);
             }
             eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
             db.SaveChanges();
             ViewBag.SuccessfulCheckIn = true;
-            return View(fullOrderedListOfGuests("", ""));
+            return View(fullList);
+        }
+        
+        private List<EventGuest> getEventGuestsWithSearchParam(String searchParam)
+        {
+            List<EventGuest> fullGuestList = db.EventGuests.ToList();
+            if (String.IsNullOrEmpty(searchParam)) return fullGuestList;
+            List<EventGuest> limitedGuestList = new List<EventGuest>();
+            foreach(EventGuest guest in fullGuestList) {
+                if (guest.FirstName.StartsWith(searchParam)) limitedGuestList.Add(guest);
+                else if (guest.LastName.StartsWith(searchParam)) limitedGuestList.Add(guest);
+                else if (guest.Email.StartsWith(searchParam)) limitedGuestList.Add(guest);
+            }
+            return limitedGuestList;
         }
 
-        private List<EventGuest> fullOrderedListOfGuests(String sortOrder, String searchParam)
+        private List<EventGuest> orderListOfGuests(String sortOrder, List<EventGuest> list)
         {
-            if(String.IsNullOrEmpty(searchParam)) searchParam = "";
-            if(String.IsNullOrEmpty(sortOrder))
-            {
-                return db.EventGuests.OrderBy(g => g.LastName).ToList();
-            }
+            if (String.IsNullOrEmpty(sortOrder)) sortOrder = "";
             switch (sortOrder)
             {
                 case "first_name_desc":
-                    return db.EventGuests.OrderByDescending(g => g.FirstName).ToList();
+                    return list.OrderByDescending(g => g.FirstName).ToList(); 
                 case "first_name_ascd":
-                    return db.EventGuests.OrderBy(g => g.FirstName).ToList();
+                    return list.OrderBy(g => g.FirstName).ToList();
                 case "last_name_desc":
-                    return db.EventGuests.OrderByDescending(g => g.LastName).ToList();
+                    return list.OrderByDescending(g => g.LastName).ToList();
                 case "last_name_ascd":
-                    return db.EventGuests.OrderBy(g => g.LastName).ToList();
+                    return list.OrderBy(g => g.LastName).ToList();
                 case "email_desc":
-                    return db.EventGuests.OrderByDescending(g => g.Email).ToList();
+                    return list.OrderByDescending(g => g.Email).ToList();
                 case "email_ascd":
-                    return db.EventGuests.OrderBy(g => g.Email).ToList();
+                    return list.OrderBy(g => g.Email).ToList();
                 default:
-                    return db.EventGuests.OrderBy(g => g.LastName).ToList();
+                    return list.OrderBy(g => g.LastName).ToList();
             }
         }
 

@@ -52,13 +52,13 @@ Uner Resource Group, press "New..."
 Below are a list of wish list items for updates to the application. 
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
-- [ ] Implement a search bar in check in page
 - [ ] Page that randomly cycles through a selected number of guests and lands on one
 
 ## Change Log
 
 ###### 18 April 2018 
 - Added custom error page in plain HTML
+- Implement a search bar in check in page with sorting
 
 ###### 17 April 2018
 - Add input field for checked in guest raffle

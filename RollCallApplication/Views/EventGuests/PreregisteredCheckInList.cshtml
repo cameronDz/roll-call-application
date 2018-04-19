@@ -18,16 +18,23 @@ else if (ViewBag.FailedCheckIn != null)
 <h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
 
+@using (Html.BeginForm("PreregisteredCheckInList", "EventGuests", FormMethod.Get))
+{
+    @Html.TextBox("searchParam", "")
+    @Html.Hidden("sortOrder", (object)ViewBag.Title)
+    <input type="submit" value="Search" class="btn btn-toolbar"/>
+}
+<br/>
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.FirstNameSortParm, searchParam = "" }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.FirstNameSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.LastNameSortParm, searchParam = "" }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.LastNameSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.EmailSortParm, searchParam = "" }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ViewBag.EmailSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th></th>
     </tr>
