@@ -102,13 +102,15 @@ namespace RollCallApplication.Controllers
         
         private List<EventGuest> getEventGuestsWithSearchParam(String searchParam)
         {
+            if (String.IsNullOrEmpty(searchParam)) searchParam = "";
+            else searchParam = searchParam.ToLower();
             List<EventGuest> fullGuestList = db.EventGuests.ToList();
             if (String.IsNullOrEmpty(searchParam)) return fullGuestList;
             List<EventGuest> limitedGuestList = new List<EventGuest>();
             foreach(EventGuest guest in fullGuestList) {
-                if (guest.FirstName.StartsWith(searchParam)) limitedGuestList.Add(guest);
-                else if (guest.LastName.StartsWith(searchParam)) limitedGuestList.Add(guest);
-                else if (guest.Email.StartsWith(searchParam)) limitedGuestList.Add(guest);
+                if (guest.FirstName.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
+                else if (guest.LastName.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
+                else if (guest.Email.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
             }
             return limitedGuestList;
         }

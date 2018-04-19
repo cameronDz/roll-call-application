@@ -21,7 +21,7 @@ else if (ViewBag.FailedCheckIn != null)
 @using (Html.BeginForm("PreregisteredCheckInList", "EventGuests", FormMethod.Get))
 {
     @Html.TextBox("searchParam", "")
-    @Html.Hidden("sortOrder", (object)ViewBag.Title)
+    @Html.Hidden("sortOrder", (object)ViewBag.SortOrder)
     <input type="submit" value="Search" class="btn btn-toolbar"/>
 }
 <br/>
