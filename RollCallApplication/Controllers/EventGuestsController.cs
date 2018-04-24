@@ -231,19 +231,21 @@ namespace RollCallApplication.Controllers
                 ModelState.AddModelError("File", errorMessage);
                 return View();
             }
-            int count = 0;
+            int registeredCount = 0;
+            int alreadyRegisteredCount = 0;
             foreach (DataRow row in csvTable.Rows)
             {
                 EventGuest tableGuest = createEventGuestFromRowData(row, firstLastEmailArray);
-                if (emailAlreadyExistsForEventGuest(tableGuest.Email)) { } //do not add guest 
+                if (emailAlreadyExistsForEventGuest(tableGuest.Email)) alreadyRegisteredCount++;
                 else
                 {
                     addEventGuestToDbContext(tableGuest);
-                    count++;
+                    registeredCount++;
                 }
             }
             ViewBag.SuccessfulUploadMessage = true;
-            ViewBag.RegisteredGuestCount = count;
+            ViewBag.RegisteredGuestCount = registeredCount;
+            ViewBag.AlreadyRegisteredCount = alreadyRegisteredCount;
             return View(new DataTable());
         }
         

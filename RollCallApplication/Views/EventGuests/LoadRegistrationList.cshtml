@@ -4,7 +4,8 @@
 @if (ViewBag.SuccessfulUploadMessage != null)
 {
     <script>
-        alert("Number of guests registered for event: " + @ViewBag.RegisteredGuestCount);
+        alert("Number of guests registered for event: " + @ViewBag.RegisteredGuestCount + "\n" +
+              "Number of guests from list already registered for event: " + @ViewBag.AlreadyRegisteredCount);
     </script>
 }
 
