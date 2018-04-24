@@ -306,8 +306,13 @@ namespace RollCallApplication.Controllers
             Trace.WriteLine("GET EventGuests/GuestListIndex");
             ViewBag.Title = "Guest List";
             ViewBag.Message = "List of all Event Guests.";
-            ViewBag.TotalCheckedInGuests = db.EventGuests.Count(g => g.TimeOfCheckIn != null);
+            ViewBag.TotalCheckedInGuests = numberOfCheckInGuests();
             return View(db.EventGuests.OrderByDescending(g => g.TimeOfCheckIn).ToList());
+        }
+
+        private int numberOfCheckInGuests()
+        {
+            return db.EventGuests.Count(g => g.TimeOfCheckIn != null);
         }
 
         [SimpleMembership]
@@ -413,6 +418,36 @@ namespace RollCallApplication.Controllers
         }
 
         [SimpleMembership]
+        public ActionResult RandomSweepstakesPicker()
+        {
+            ViewBag.WinnerPicked = null;
+            ViewBag.WinnerMessage = null;
+            ViewBag.Title = "Sweepstakes Raffle!";
+            ViewBag.Message = "Click the Red Button to run the sweep stakes!";
+            return View();
+        }
+
+        [HttpPost]
+        [SimpleMembership]
+        public ActionResult RandomSweepstakesPicker(Boolean getRandomCheckedInGuest)
+        {
+            Random random = new Random();
+            int randomIndex = random.Next(0, numberOfCheckInGuests());
+            List<EventGuest> list = db.EventGuests.Where(g => g.TimeOfCheckIn != null).ToList();
+            EventGuest winner = list.ElementAt(randomIndex);
+            ViewBag.Title = "Sweepstakes Raffle!";
+            ViewBag.Message = "YEEEEAAAAAA!!!!!";
+            ViewBag.WinnerPicked = true;
+            ViewBag.WinnerMessage = getCongratulationsMessage(winner);
+            return View(winner);
+        }
+
+        private String getCongratulationsMessage(EventGuest guest)
+        {
+            return "Congratulations to " + guest.FirstName + " " + guest.LastName + "!";
+        }
+
+        [SimpleMembership]
         public ActionResult GuessCheckInTime(int? randomNumber)
         {
             Trace.WriteLine("GET EventGuests/GuessCheckInTime randomNumber: " + randomNumber);
@@ -437,7 +472,7 @@ namespace RollCallApplication.Controllers
                 ViewBag.Message = instructionMessage;
                 ViewBag.Congrats = true;
                 ViewBag.CheckInGuess = randomNumber;
-                ViewBag.CongratulationsMessage = "Congratulations to " + guest.FirstName + " " + guest.LastName + "!";
+                ViewBag.CongratulationsMessage = getCongratulationsMessage(guest);
                 return View(guest);
             }
             catch (ArgumentOutOfRangeException e)

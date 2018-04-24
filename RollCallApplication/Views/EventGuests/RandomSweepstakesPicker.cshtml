@@ -1,0 +1,54 @@
+﻿@model RollCallApplication.Models.EventGuest
+@if (@ViewBag.WinnerPicked != null)
+{
+    <script>
+        alert("@ViewBag.WinnerMessage");
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
+
+@if (ViewBag.WinnerPicked != null)
+{
+    <div>
+        <h4>Winner Information</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Clear Winner", "RandomSweepstakesPicker")
+    </p>
+}
+else
+{
+    using (Html.BeginForm("RandomSweepstakesPicker", "EventGuests", FormMethod.Post))
+    {
+        @Html.Hidden("getRandomCheckedInGuest", true)
+        <input type="submit" value="Run Raffle" class="btn btn-danger"/>
+    }
+}

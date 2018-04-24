@@ -230,6 +230,7 @@
     <Content Include="Views\EventGuests\LoadRegistrationList.cshtml" />
     <Content Include="Views\EventGuests\AdministratorIndex.cshtml" />
     <Content Include="Views\EventGuests\GuessCheckInTime.cshtml" />
+    <Content Include="Views\EventGuests\RandomSweepstakesPicker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
