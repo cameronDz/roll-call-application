@@ -237,6 +237,7 @@ namespace RollCallApplication.Controllers
             {
                 EventGuest tableGuest = createEventGuestFromRowData(row, firstLastEmailArray);
                 if (emailAlreadyExistsForEventGuest(tableGuest.Email)) alreadyRegisteredCount++;
+                else if (String.IsNullOrEmpty(tableGuest.Email)) alreadyRegisteredCount++;
                 else
                 {
                     addEventGuestToDbContext(tableGuest);

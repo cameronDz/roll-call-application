@@ -52,9 +52,15 @@ Uner Resource Group, press "New..."
 Below are a list of wish list items for updates to the application. 
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
-- [ ] Page that randomly cycles through a selected number of guests and lands on one
 
 ## Change Log
+
+###### 24 April 2018
+- Guest emails now must be unique to be added to registered list
+- Added sweepstakes/raffle page for randomly selecting a checked in guest
+- Added ability for administrator to un-Check In a guest
+- Added count of guests that were already registered for event in .csv file
+- Made it so checked in guests must have an email
 
 ###### 18 April 2018 
 - Added custom error page in plain HTML
