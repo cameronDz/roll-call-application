@@ -159,6 +159,13 @@ namespace RollCallApplication.Controllers
             ViewBag.FailedCheckInPreregister = true;
             if (ModelState.IsValid)
             {
+                if(emailAlreadyExistsForEventGuest(eventGuest.Email))
+                {
+                    EventGuest existingGuest = db.EventGuests.FirstOrDefault(g => g.Email.Equals(eventGuest.Email));
+                    String errorMessage = generateExistingGuestErrorMessage(existingGuest);
+                    ModelState.AddModelError("Email", errorMessage);
+                    return View(eventGuest);
+                }
                 if(eventGuest.Preregistered == false) eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
                 addEventGuestToDbContext(eventGuest);
                 ModelState.Clear();
@@ -168,6 +175,19 @@ namespace RollCallApplication.Controllers
                 return View(new EventGuest { });
             }
             return View(eventGuest);
+        }
+
+        private Boolean emailAlreadyExistsForEventGuest(String email)
+        {
+            int count = db.EventGuests.Count(g => g.Email.Equals(email));
+            return count > 0;
+        }
+
+        private String generateExistingGuestErrorMessage(EventGuest existingGuest)
+        {
+            String message = "Failed Registration. Email already registered on database under.\nFirst Name: " +
+                existingGuest.FirstName + "\nLast Name: " + existingGuest.LastName + "\nEmail: " + existingGuest.Email;
+            return message;
         }
 
         [SimpleMembership]
@@ -215,8 +235,12 @@ namespace RollCallApplication.Controllers
             foreach (DataRow row in csvTable.Rows)
             {
                 EventGuest tableGuest = createEventGuestFromRowData(row, firstLastEmailArray);
-                addEventGuestToDbContext(tableGuest);
-                count++;
+                if (emailAlreadyExistsForEventGuest(tableGuest.Email)) { } //do not add guest 
+                else
+                {
+                    addEventGuestToDbContext(tableGuest);
+                    count++;
+                }
             }
             ViewBag.SuccessfulUploadMessage = true;
             ViewBag.RegisteredGuestCount = count;
