@@ -20,7 +20,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Preregistered)
         </th>
-        <th></th>
+        <th>Options</th>
     </tr>
 
     @foreach (var item in Model)
@@ -43,7 +43,12 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "EditGuest", new { id = item.GuestId }) |
-                @Html.ActionLink("Delete", "DeleteGuest", new { id = item.GuestId })
+                @Html.ActionLink("Delete", "DeleteGuest", new { id = item.GuestId }) 
+                @if (item.TimeOfCheckIn != null)
+                {
+                    <br/>
+                    @Html.ActionLink("Uncheck In Guest", "UnCheckInGuest", new { id = item.GuestId })     
+                }
             </td>
         </tr>
     }

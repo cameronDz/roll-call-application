@@ -356,6 +356,17 @@ namespace RollCallApplication.Controllers
         }
 
         [SimpleMembership]
+        public ActionResult UnCheckInGuest(int id)
+        {
+            EventGuest eventGuest = db.EventGuests.Find(id);
+            if (eventGuest == null) return RedirectToAction("GuestListIndex");
+            eventGuest.TimeOfCheckIn = null;
+            db.Entry(eventGuest).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("GuestListIndex");
+        }
+
+        [SimpleMembership]
         public ActionResult DeleteGuest(int? id)
         {
             Trace.WriteLine("GET EventGuest/Delete id: " + id);
