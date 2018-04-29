@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="EventName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Event Name</Value>
+      <Value Profile="(Default)">Roll Call Application</Value>
     </Setting>
     <Setting Name="CreatorEmail" Type="System.String" Scope="Application">
       <Value Profile="(Default)">CameronDziurgot@gmail.com</Value>

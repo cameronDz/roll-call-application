@@ -1,14 +1,8 @@
 ﻿@model IEnumerable<RollCallApplication.Models.EventGuest>
-@if (ViewBag.SuccessfulCheckIn != null)
+@if (ViewBag.CheckInAttemptMade != null)
 {
     <script>
-        alert("Successfully checked into the event!")
-    </script>
-}
-else if (ViewBag.FailedCheckIn != null)
-{
-    <script>
-        alert("Unable to check into event. Please try again..")
+        alert("@ViewBag.AlertMessage");
     </script>
 }
 <div class="jumbotron">
@@ -22,9 +16,9 @@ else if (ViewBag.FailedCheckIn != null)
 {
     @Html.TextBox("searchParam", "")
     @Html.Hidden("sortOrder", (object)ViewBag.SortOrder)
-    <input type="submit" value="Search" class="btn btn-toolbar"/>
+    <input type="submit" value="Search" class="btn btn-toolbar" />
 }
-<br/>
+<br />
 <table class="table">
     <tr>
         <th>

@@ -2,23 +2,41 @@
 
 <h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
-
+<p>Total Guests checked in: @ViewBag.TotalCheckedInGuests</p>
+<p>@Html.ActionLink("Download Full Attendee List", "DownloadListAsCsv", "EventGuests")</p>
+<br />
+@using (Html.BeginForm("GuestListIndex", "EventGuests", FormMethod.Get))
+{
+    @Html.TextBox("searchParam", "")
+    @Html.Hidden("sortOrder", (object)ViewBag.SortOrder)
+    <input type="submit" value="Search" class="btn btn-toolbar" />
+}
+<br />
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "GuestListIndex", (new { sortOrder = ViewBag.FirstNameSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "GuestListIndex", (new { sortOrder = ViewBag.LastNameSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "GuestListIndex", (new { sortOrder = ViewBag.EmailSortParm, searchParam = ViewBag.SearchParam }))
         </th>
         <th>
             @Html.DisplayNameFor(model => model.TimeOfCheckIn)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Preregistered)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WonCheckInRaffle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExtraRaffleEntry)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WonExtraRaffleEntry)
         </th>
         <th>Options</th>
     </tr>
@@ -42,17 +60,36 @@
                 @Html.DisplayFor(modelItem => item.Preregistered)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.WonCheckInRaffle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraRaffleEntry)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WonExtraRaffleEntry)
+            </td>
+            <td>
                 @Html.ActionLink("Edit", "EditGuest", new { id = item.GuestId }) |
-                @Html.ActionLink("Delete", "DeleteGuest", new { id = item.GuestId }) 
+                @Html.ActionLink("Delete", "DeleteGuest", new { id = item.GuestId })
                 @if (item.TimeOfCheckIn != null)
                 {
+                    <br />
+                    @Html.ActionLink("Un-check In", "UnCheckInGuest", new { id = item.GuestId })
+                }
+                @if(item.WonExtraRaffleEntry == false)
+                {
                     <br/>
-                    @Html.ActionLink("Uncheck In Guest", "UnCheckInGuest", new { id = item.GuestId })     
+                    if (item.ExtraRaffleEntry == false)
+                    {
+                        @Html.ActionLink("Give Extra Raffle", "InvertGuestExtraRaffleEntry", new { id = item.GuestId })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Remove Extra Raffle", "InvertGuestExtraRaffleEntry", new { id = item.GuestId })
+                    }
                 }
             </td>
         </tr>
     }
 </table>
 
-<p>Total Guests checked in: @ViewBag.TotalCheckedInGuests</p>
-<p>@Html.ActionLink("Download Attendee List", "DownloadListAsCsv", "EventGuests")</p>

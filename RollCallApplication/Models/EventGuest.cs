@@ -23,5 +23,18 @@ namespace RollCallApplication.Models
         public DateTime? TimeOfCheckIn { get; set; }
         [Display(Name = "Preregister")]
         public Boolean Preregistered { get; set; }
+        [Display(Name = "Won Check In Raffle")]
+        public Boolean WonCheckInRaffle { get; set; }
+        [Display(Name = "Got Extra Raffle Entry")]
+        public Boolean ExtraRaffleEntry { get; set; }
+        [Display(Name = "Won Extra Raffle Entry")]
+        public Boolean WonExtraRaffleEntry { get; set; }
+
+        public EventGuest()
+        {
+            WonCheckInRaffle = false;
+            ExtraRaffleEntry = false;
+            WonExtraRaffleEntry = false;
+        }
     }
 }

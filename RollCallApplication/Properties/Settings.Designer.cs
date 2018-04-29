@@ -25,7 +25,7 @@ namespace RollCallApplication.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Event Name")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Roll Call Application")]
         public string EventName {
             get {
                 return ((string)(this["EventName"]));

@@ -82,30 +82,28 @@ namespace RollCallApplication.Controllers
             ViewBag.EmailSortParm = "email_ascd";
             ViewBag.SortOrder = "";
             ViewBag.SearchParam = "";
+            ViewBag.CheckInAttemptMade = true;
+            ViewBag.AlertMessage = "Unable to check into event. Please try again..";
             List<EventGuest> fullList = orderListOfGuests("", getEventGuestsWithSearchParam(""));
-            if (id == null)
-            {
-                ViewBag.FailedCheckIn = true;
-                return View(fullList);
-            }
+            if (id == null) return View(fullList);
             EventGuest eventGuest = db.EventGuests.Find(id);
-            if (eventGuest == null)
+            if (eventGuest == null) return View(fullList);
+            if(eventGuest.TimeOfCheckIn != null)
             {
-                ViewBag.FailedCheckIn = true;
+                ViewBag.AlertMessage = "Welcome back to the event!";
                 return View(fullList);
             }
             eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
             db.SaveChanges();
-            ViewBag.SuccessfulCheckIn = true;
+            ViewBag.AlertMessage = "Successfully checked into the event!";
             return View(fullList);
         }
         
         private List<EventGuest> getEventGuestsWithSearchParam(String searchParam)
         {
-            if (String.IsNullOrEmpty(searchParam)) searchParam = "";
-            else searchParam = searchParam.ToLower();
             List<EventGuest> fullGuestList = db.EventGuests.ToList();
             if (String.IsNullOrEmpty(searchParam)) return fullGuestList;
+            else searchParam = searchParam.ToLower();
             List<EventGuest> limitedGuestList = new List<EventGuest>();
             foreach(EventGuest guest in fullGuestList) {
                 if (guest.FirstName.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
@@ -150,7 +148,7 @@ namespace RollCallApplication.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RegisterGuest([Bind(Include = "GuestId,FirstName,LastName,Email,Preregistered")] EventGuest eventGuest)
+        public ActionResult RegisterGuest([Bind(Include = "GuestId,FirstName,LastName,Email,Preregistered,WonCheckInRaffle,ExtraRaffleEntry,WonExtraRaffleEntry")] EventGuest eventGuest)
         {
             Trace.WriteLine("POST /EventGuests/RegisterGuest eventGuest: " + eventGuest.ToString());
             ViewBag.Title = "Register";
@@ -304,13 +302,19 @@ namespace RollCallApplication.Controllers
         }
 
         [SimpleMembership]
-        public ActionResult GuestListIndex()
+        public ActionResult GuestListIndex(String sortOrder, String searchParam)
         {
             Trace.WriteLine("GET EventGuests/GuestListIndex");
             ViewBag.Title = "Guest List";
             ViewBag.Message = "List of all Event Guests.";
             ViewBag.TotalCheckedInGuests = numberOfCheckInGuests();
-            return View(db.EventGuests.OrderByDescending(g => g.TimeOfCheckIn).ToList());
+            ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
+            ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
+            ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.SearchParam = searchParam;
+            List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
+            return View(orderListOfGuests(sortOrder, guestList));
         }
 
         private int numberOfCheckInGuests()
@@ -370,6 +374,17 @@ namespace RollCallApplication.Controllers
         }
 
         [SimpleMembership]
+        public ActionResult InvertGuestExtraRaffleEntry(int id)
+        {
+            EventGuest eventGuest = db.EventGuests.Find(id);
+            if (eventGuest == null) return RedirectToAction("GuestListIndex");
+            eventGuest.ExtraRaffleEntry = !eventGuest.ExtraRaffleEntry;
+            db.Entry(eventGuest).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("GuestListIndex");
+        }
+
+        [SimpleMembership]
         public ActionResult DeleteGuest(int? id)
         {
             Trace.WriteLine("GET EventGuest/Delete id: " + id);
@@ -414,8 +429,11 @@ namespace RollCallApplication.Controllers
                 "First Name", 
                 "Last Name", 
                 "Email", 
-                "Preregistered", 
-                "Check in Time");
+                "Preregistered",
+                "Check in Time",
+                "Won Check In Raffle",
+                "Extra Raffle Entry",
+                "Won Extra Raffle Entry");
             foreach (EventGuest row in rows)
             {
                 WriteLineInCsvStringBuilder(csv, 
@@ -423,11 +441,14 @@ namespace RollCallApplication.Controllers
                     row.LastName, 
                     row.Email, 
                     row.Preregistered.ToString(), 
-                    row.TimeOfCheckIn.ToString());
+                    row.TimeOfCheckIn.ToString(),
+                    row.WonCheckInRaffle.ToString(), 
+                    row.ExtraRaffleEntry.ToString(), 
+                    row.WonExtraRaffleEntry.ToString());
             }
 
             var data = Encoding.UTF8.GetBytes(csv.ToString());
-            string filename = "rollCallExtract-" + DateTime.Now.ToString() + ".csv";
+            string filename = "rollCallExtract-" + GetCurrentDateTimeWithOffSet().ToString() + ".csv";
             return File(data, "text/csv", filename);
         }
 
@@ -445,60 +466,46 @@ namespace RollCallApplication.Controllers
         [SimpleMembership]
         public ActionResult RandomSweepstakesPicker(Boolean getRandomCheckedInGuest)
         {
-            Random random = new Random();
-            int randomIndex = random.Next(0, numberOfCheckInGuests());
-            List<EventGuest> list = db.EventGuests.Where(g => g.TimeOfCheckIn != null).ToList();
-            EventGuest winner = list.ElementAt(randomIndex);
             ViewBag.Title = "Sweepstakes Raffle!";
+            List<EventGuest> checkedInList = db.EventGuests.Where(g => g.TimeOfCheckIn != null && g.WonCheckInRaffle == false).OrderBy(g => g.TimeOfCheckIn).ToList();
+            List<EventGuest> extraRaffleList = db.EventGuests.Where(g => g.ExtraRaffleEntry == true && g.WonExtraRaffleEntry == false).OrderBy(g => g.Email).ToList();
+            int numberOfRaffleEntrees = checkedInList.Count() + extraRaffleList.Count();
+            if (numberOfRaffleEntrees < 1)
+            {
+                ViewBag.Message = "Unable to pick a winner since no one qualifies.";
+                return View();
+            }
+            EventGuest winner = getWinningEventGuest(numberOfRaffleEntrees, checkedInList, extraRaffleList);
             ViewBag.Message = "YEEEEAAAAAA!!!!!";
             ViewBag.WinnerPicked = true;
             ViewBag.WinnerMessage = getCongratulationsMessage(winner);
             return View(winner);
         }
 
+        private EventGuest getWinningEventGuest(int eligibilityCount, List<EventGuest> checkedInList ,List<EventGuest> extraRaffleList)
+        {
+            EventGuest winner;
+            Random random = new Random();
+            int randomIndex = random.Next(0, eligibilityCount);
+            int overFlowIndex = randomIndex - checkedInList.Count();
+            if (overFlowIndex >= 0)
+            {
+                winner = extraRaffleList.ElementAt(overFlowIndex);
+                winner.WonExtraRaffleEntry = true;
+            }
+            else
+            {
+                winner = checkedInList.ElementAt(randomIndex);
+                winner.WonCheckInRaffle = true;
+            }
+            db.Entry(winner).State = EntityState.Modified;
+            db.SaveChanges();
+            return winner;
+        }
+
         private String getCongratulationsMessage(EventGuest guest)
         {
             return "Congratulations to " + guest.FirstName + " " + guest.LastName + "!";
-        }
-
-        [SimpleMembership]
-        public ActionResult GuessCheckInTime(int? randomNumber)
-        {
-            Trace.WriteLine("GET EventGuests/GuessCheckInTime randomNumber: " + randomNumber);
-            ViewBag.Title = "Guess Check In Time";
-            if (listOfAllGuestsThatHaveACheckInTime().Count() < 1)
-            {
-                ViewBag.Message = "No checked in guests. Can not guess a time.";
-                return View();
-            }
-            String instructionMessage = "Enter a number between 1 and " + getCheckInCount() + "!";
-            ViewBag.Message = instructionMessage;
-            if(randomNumber == null)
-            {
-                return View();
-            }
-            ViewBag.Message = "Make sure the number you guess is in the ranged..\n" + instructionMessage;
-            if (randomNumber > getCheckInCount() || randomNumber < 1)  return View();
-            try
-            {
-                int nonNullNumber = randomNumber ?? default(int);
-                EventGuest guest = listOfAllGuestsThatHaveACheckInTime().ElementAt(nonNullNumber-1);
-                ViewBag.Message = instructionMessage;
-                ViewBag.Congrats = true;
-                ViewBag.CheckInGuess = randomNumber;
-                ViewBag.CongratulationsMessage = getCongratulationsMessage(guest);
-                return View(guest);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Trace.WriteLine(e);
-                return View();
-            }
-            catch (ArgumentNullException e) 
-            {
-                Trace.WriteLine(e);
-                return View();
-            }
         }
 
         private int getCheckInCount()
@@ -521,13 +528,17 @@ namespace RollCallApplication.Controllers
         }
 
         private StringBuilder WriteLineInCsvStringBuilder(StringBuilder csv, String columnOne,
-                String columnTwo, String columnThree, String columnFour, String columnFive)
+                String columnTwo, String columnThree, String columnFour, String columnFive,
+                String columnSix, String columnSeven, String columnEight)
         {
             csv.Append(columnOne).Append(',');
             csv.Append(columnTwo).Append(',');
             csv.Append(columnThree).Append(',');
             csv.Append(columnFour).Append(',');
             csv.Append(columnFive).Append(',');
+            csv.Append(columnSix).Append(',');
+            csv.Append(columnSeven).Append(',');
+            csv.Append(columnEight).Append(',');
             csv.AppendLine();
             return csv;
         }
