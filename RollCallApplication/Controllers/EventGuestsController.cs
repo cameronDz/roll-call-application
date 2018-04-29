@@ -31,7 +31,7 @@ namespace RollCallApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult AdminPasscodeCheck(string password)
+        public ActionResult AdminPasscodeCheck(String password)
         {
             Trace.WriteLine("POST EventGuests/AdminPasscodeCheck password: ***");
             if (Settings.Default.AdminPasscode.Equals(password))
@@ -57,12 +57,9 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET EventGuests/PreregisterCheckIn sortOrder: " + sortOrder + ", searchParam: " + searchParam);
             ViewBag.Title = "Check In List";
-            ViewBag.Message = "Preregister Guest Check In List.";
+            ViewBag.Message = EventGuestConstants.CHECK_IN_DEFAULT_MESSAGE;
             ViewBag.EventName = Settings.Default.EventName;
-            ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
-            ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
-            ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
-            ViewBag.SortOrder = sortOrder;
+            ViewBag.SortOrder = (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
             ViewBag.SearchParam = searchParam;
             List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
             return View(orderListOfGuests(sortOrder, guestList));
@@ -74,11 +71,8 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("POST EventGuests/PreregisterCheckIn id: " + id);
             ViewBag.Title = "Check In List";
-            ViewBag.Message = "Preregister Guest Check In List.";
+            ViewBag.Message = EventGuestConstants.CHECK_IN_DEFAULT_MESSAGE; 
             ViewBag.EventName = Settings.Default.EventName;
-            ViewBag.FirstNameSortParm = "first_name_ascd";
-            ViewBag.LastNameSortParm = "last_name_desc";
-            ViewBag.EmailSortParm = "email_ascd";
             ViewBag.SortOrder = "";
             ViewBag.SearchParam = "";
             ViewBag.CheckInAttemptMade = true;
@@ -129,6 +123,10 @@ namespace RollCallApplication.Controllers
                     return list.OrderByDescending(g => g.Email).ToList();
                 case "email_ascd":
                     return list.OrderBy(g => g.Email).ToList();
+                case "time_of_check_in_desc":
+                    return list.OrderByDescending(g => g.TimeOfCheckIn).ToList();
+                case "time_of_check_in_ascd":
+                    return list.OrderBy(g => g.TimeOfCheckIn).ToList();
                 default:
                     return list.OrderBy(g => g.LastName).ToList();
             }
@@ -305,10 +303,7 @@ namespace RollCallApplication.Controllers
             ViewBag.Title = "Guest List";
             ViewBag.Message = "List of all Event Guests.";
             ViewBag.TotalCheckedInGuests = numberOfCheckInGuests();
-            ViewBag.FirstNameSortParm = ("first_name_ascd").Equals(sortOrder) ? "first_name_desc" : "first_name_ascd";
-            ViewBag.LastNameSortParm = (("last_name_ascd").Equals(sortOrder) || String.IsNullOrEmpty(sortOrder)) ? "last_name_desc" : "last_name_ascd";
-            ViewBag.EmailSortParm = ("email_ascd").Equals(sortOrder) ? "email_desc" : "email_ascd";
-            ViewBag.SortOrder = sortOrder;
+            ViewBag.SortOrder = (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
             ViewBag.SearchParam = searchParam;
             List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
             return View(orderListOfGuests(sortOrder, guestList));
@@ -516,10 +511,7 @@ namespace RollCallApplication.Controllers
             List<EventGuest> checkInList = new List<EventGuest>();
             foreach (EventGuest g in guestList)
             {
-                if (g.TimeOfCheckIn != null)
-                {
-                    checkInList.Add(g);
-                }
+                if (g.TimeOfCheckIn != null) checkInList.Add(g); 
             }
             return checkInList;
         }
