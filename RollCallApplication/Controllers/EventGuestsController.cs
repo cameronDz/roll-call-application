@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
 using RollCallApplication.Attribute;
+using RollCallApplication.Constants;
 using RollCallApplication.DAL;
 using RollCallApplication.Models;
 using RollCallApplication.Properties;
@@ -25,8 +26,7 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET EventGuests/AdminPasscodeCheck");
             ViewBag.Title = "Passcode Check";
-            ViewBag.Message = "Enter passcode to view guests check in times and make " +
-                "edit/deletions to guests.";
+            ViewBag.Message = EventGuestConstants.ADMIN_PASSCODE_DEFAULT;
             return View();
         }
 
@@ -40,8 +40,7 @@ namespace RollCallApplication.Controllers
                 return RedirectToAction("AdministratorIndex");
             }
             ViewBag.Title = "Passcode Check";
-            ViewBag.Message = "Must enter passcode to view any list of guests and make edit/deletions" +
-                "to guests that have checked in through application";
+            ViewBag.Message = EventGuestConstants.ADMIN_PASSCODE_WARNING;
             ViewBag.EnteredWrongPasscode = true;
             return View();
         }
@@ -83,7 +82,7 @@ namespace RollCallApplication.Controllers
             ViewBag.SortOrder = "";
             ViewBag.SearchParam = "";
             ViewBag.CheckInAttemptMade = true;
-            ViewBag.AlertMessage = "Unable to check into event. Please try again..";
+            ViewBag.AlertMessage = EventGuestConstants.CHECK_IN_FAIL;
             List<EventGuest> fullList = orderListOfGuests("", getEventGuestsWithSearchParam(""));
             if (id == null) return View(fullList);
             EventGuest eventGuest = db.EventGuests.Find(id);
@@ -139,7 +138,7 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET /EventGuests/RegisterGuest");
             ViewBag.Title = "Register Guest";
-            ViewBag.Message = "Register or Check In an unregistered Guest for Event.";
+            ViewBag.Message = EventGuestConstants.REGISTRATION_DEFAULT;
             ViewBag.EventName = Settings.Default.EventName;
             return View(new EventGuest { });
         }
@@ -152,7 +151,7 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("POST /EventGuests/RegisterGuest eventGuest: " + eventGuest.ToString());
             ViewBag.Title = "Register";
-            ViewBag.Message = "Register or Check In an unregistered Guest for Event.";
+            ViewBag.Message = EventGuestConstants.REGISTRATION_DEFAULT;
             ViewBag.EventName = Settings.Default.EventName;
             ViewBag.FailedCheckInPreregister = true;
             if (ModelState.IsValid)
@@ -183,7 +182,7 @@ namespace RollCallApplication.Controllers
 
         private String generateExistingGuestErrorMessage(EventGuest existingGuest)
         {
-            String message = "Failed Registration. Email already registered on database under.\nFirst Name: " +
+            String message = EventGuestConstants.REGISTRATION_EXISTING_ERROR + "\nFirst Name: " +
                 existingGuest.FirstName + "\nLast Name: " + existingGuest.LastName + "\nEmail: " + existingGuest.Email;
             return message;
         }
@@ -193,7 +192,7 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET EventGuests/LoadRegistrationList");
             ViewBag.Title = "Load Registration";
-            ViewBag.Message = "Load Registration List through .csv file.";
+            ViewBag.Message = EventGuestConstants.LOAD_REGISTRANTS_DEFAULT;
             return View();
         }
 
@@ -204,29 +203,27 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("POST EventGuests/LoadRegistrationList upload: " + upload.ToString());
             ViewBag.Title = "Load Registration";
-            ViewBag.Message = "Load Registration List through .csv file.";
+            ViewBag.Message = EventGuestConstants.LOAD_REGISTRANTS_DEFAULT;
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("File", "Failed Upload. Error on in table.");
+                ModelState.AddModelError("File", EventGuestConstants.LOAD_REGISTRANTS_TABLE_ERROR);
                 return View();
             }
             if (upload == null || upload.ContentLength <= 0)
             {
-                ModelState.AddModelError("File", "Failed Upload. Upload never arrived.");
+                ModelState.AddModelError("File", EventGuestConstants.LOAD_REGISTRANTS_UPLOAD_ERROR);
                 return View();
             }
             if (!upload.FileName.EndsWith(".csv"))
             {
-                String errorMessage = "Failed Upload. Unable to load registrants due to upload not being .csv file.";
-                ModelState.AddModelError("File", errorMessage);
+                ModelState.AddModelError("File", EventGuestConstants.LOAD_REGISTRANTS_FILE_TYPE_ERROR);
                 return View();
             }
             DataTable csvTable = createNewDataTableFromUpload(upload);
             int[] firstLastEmailArray = createIntArrayForFirstLastEmailColumns(csvTable);
             if (intArrayHasNegativeValues(firstLastEmailArray))
             {
-                String errorMessage = "Failed Upload. Unable to load registrants due to column name issue is .csv file.";
-                ModelState.AddModelError("File", errorMessage);
+                ModelState.AddModelError("File", EventGuestConstants.LOAD_REGISTRANTS_MISSING_COLUMN_ERROR);
                 return View();
             }
             int registeredCount = 0;

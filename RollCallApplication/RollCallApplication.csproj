@@ -160,6 +160,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attribute\SimpleMembershipAttribute.cs" />
+    <Compile Include="Constants\EventGuestConstants.cs" />
     <Compile Include="Controllers\EventGuestsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\RollCallContext.cs" />
