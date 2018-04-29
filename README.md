@@ -52,8 +52,16 @@ Uner Resource Group, press "New..."
 Below are a list of wish list items for updates to the application. 
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
+- [ ] Remove all logic for add/editing/removing entities from context out of Controller and into Repository
+- [ ] Remove all logic for services out of Controller and into Service
 
 ## Change Log
+
+###### 29 April 2018
+- Sort/search functionality added to Admin index
+- Added Constants class for log Strings in controller
+- Simplified sortOrder parameter logic
+- Began extracting out logic from EventGuest Controller and into Service and Repository
 
 ###### 24 April 2018
 - Guest emails now must be unique to be added to registered list
