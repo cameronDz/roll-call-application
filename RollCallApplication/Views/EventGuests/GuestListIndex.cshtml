@@ -15,16 +15,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ("first_name_ascd".Equals(ViewBag.SortOrder) ? "first_name_desc" : "first_name_ascd"), searchParam = ViewBag.SearchParam }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToHtmlString(), "GuestListIndex", (new { sortOrder = ("first_name_ascd".Equals(ViewBag.SortOrder) ? "first_name_desc" : "first_name_ascd"), searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ("last_name_ascd".Equals(ViewBag.SortOrder) ? "last_name_desc" : "last_name_ascd"), searchParam = ViewBag.SearchParam }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToHtmlString(), "GuestListIndex", (new { sortOrder = ("last_name_ascd".Equals(ViewBag.SortOrder) ? "last_name_desc" : "last_name_ascd"), searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ("email_ascd".Equals(ViewBag.SortOrder) ? "email_desc" : "email_ascd"), searchParam = ViewBag.SearchParam }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Email).ToHtmlString(), "GuestListIndex", (new { sortOrder = ("email_ascd".Equals(ViewBag.SortOrder) ? "email_desc" : "email_ascd"), searchParam = ViewBag.SearchParam }))
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.TimeOfCheckIn).ToHtmlString(), "PreregisteredCheckInList", (new { sortOrder = ("time_of_check_in_ascd".Equals(ViewBag.SortOrder) ? "time_of_check_in_desc" : "time_of_check_in_ascd"), searchParam = ViewBag.SearchParam }))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.TimeOfCheckIn).ToHtmlString(), "GuestListIndex", (new { sortOrder = ("time_of_check_in_ascd".Equals(ViewBag.SortOrder) ? "time_of_check_in_desc" : "time_of_check_in_ascd"), searchParam = ViewBag.SearchParam }))
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Preregistered)

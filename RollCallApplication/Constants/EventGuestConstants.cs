@@ -11,6 +11,8 @@ namespace RollCallApplication.Constants
         public static readonly String ADMIN_PASSCODE_WARNING = "Must enter passcode to view any list of guests and make edit/deletions to guests that have checked in through application";
         public static readonly String CHECK_IN_DEFAULT_MESSAGE = "Preregister Guest Check In List.";
         public static readonly String CHECK_IN_FAIL = "Unable to check into event. Please try again..";
+        public static readonly String CHECK_IN_SUCCESS = "Successfully checked into the event!";
+        public static readonly String CHECK_IN_WELCOME_BACK =  "Welcome back to the event!";
         public static readonly String REGISTRATION_DEFAULT = "Register or Check In an unregistered Guest for Event.";
         public static readonly String REGISTRATION_EXISTING_ERROR = "Failed Registration. Email already registered on database under:";
         public static readonly String LOAD_REGISTRANTS_DEFAULT = "Load Registration List through .csv file.";

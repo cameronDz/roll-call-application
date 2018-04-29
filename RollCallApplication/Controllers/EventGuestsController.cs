@@ -14,12 +14,16 @@ using RollCallApplication.Constants;
 using RollCallApplication.DAL;
 using RollCallApplication.Models;
 using RollCallApplication.Properties;
+using RollCallApplication.Repositories;
+using RollCallApplication.Services;
 
 namespace RollCallApplication.Controllers
 {
     public class EventGuestsController : Controller
     {
         private RollCallContext db = new RollCallContext();
+        private EventGuestRepository repository = new EventGuestRepository();
+        private EventGuestService service = new EventGuestService();
 
         // Passcode methods source: https://github.com/balexandre/Stackoverflow-Question-12378445 
         public ActionResult AdminPasscodeCheck()
@@ -50,7 +54,20 @@ namespace RollCallApplication.Controllers
         {
             Trace.WriteLine("GET EventGuests/AdministratorIndex");
             ViewBag.Title = "Administrator Index";
+            ViewBag.Message = EventGuestConstants.ADMIN_PASSCODE_DEFAULT;
             return View();
+        }
+
+        [SimpleMembership]
+        public ActionResult GuestListIndex(String sortOrder, String searchParam)
+        {
+            Trace.WriteLine("GET EventGuests/GuestListIndex");
+            ViewBag.Title = "Guest List";
+            ViewBag.Message = "List of all Event Guests.";
+            ViewBag.TotalCheckedInGuests = numberOfCheckInGuests();
+            ViewBag.SortOrder = (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
+            ViewBag.SearchParam = searchParam;
+            return View(repository.GetOrderedEventGuestListWithSearchParam(sortOrder, searchParam));
         }
 
         public ActionResult PreregisteredCheckInList(String sortOrder, String searchParam)
@@ -61,8 +78,7 @@ namespace RollCallApplication.Controllers
             ViewBag.EventName = Settings.Default.EventName;
             ViewBag.SortOrder = (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
             ViewBag.SearchParam = searchParam;
-            List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
-            return View(orderListOfGuests(sortOrder, guestList));
+            return View(repository.GetOrderedEventGuestListWithSearchParam(sortOrder, searchParam));
         }
 
         [HttpPost]
@@ -77,59 +93,12 @@ namespace RollCallApplication.Controllers
             ViewBag.SearchParam = "";
             ViewBag.CheckInAttemptMade = true;
             ViewBag.AlertMessage = EventGuestConstants.CHECK_IN_FAIL;
-            List<EventGuest> fullList = orderListOfGuests("", getEventGuestsWithSearchParam(""));
-            if (id == null) return View(fullList);
-            EventGuest eventGuest = db.EventGuests.Find(id);
-            if (eventGuest == null) return View(fullList);
-            if(eventGuest.TimeOfCheckIn != null)
-            {
-                ViewBag.AlertMessage = "Welcome back to the event!";
-                return View(fullList);
-            }
-            eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
-            db.SaveChanges();
-            ViewBag.AlertMessage = "Successfully checked into the event!";
-            return View(fullList);
-        }
-        
-        private List<EventGuest> getEventGuestsWithSearchParam(String searchParam)
-        {
-            List<EventGuest> fullGuestList = db.EventGuests.ToList();
-            if (String.IsNullOrEmpty(searchParam)) return fullGuestList;
-            else searchParam = searchParam.ToLower();
-            List<EventGuest> limitedGuestList = new List<EventGuest>();
-            foreach(EventGuest guest in fullGuestList) {
-                if (guest.FirstName.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
-                else if (guest.LastName.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
-                else if (guest.Email.ToLower().StartsWith(searchParam)) limitedGuestList.Add(guest);
-            }
-            return limitedGuestList;
-        }
-
-        private List<EventGuest> orderListOfGuests(String sortOrder, List<EventGuest> list)
-        {
-            if (String.IsNullOrEmpty(sortOrder)) sortOrder = "";
-            switch (sortOrder)
-            {
-                case "first_name_desc":
-                    return list.OrderByDescending(g => g.FirstName).ToList(); 
-                case "first_name_ascd":
-                    return list.OrderBy(g => g.FirstName).ToList();
-                case "last_name_desc":
-                    return list.OrderByDescending(g => g.LastName).ToList();
-                case "last_name_ascd":
-                    return list.OrderBy(g => g.LastName).ToList();
-                case "email_desc":
-                    return list.OrderByDescending(g => g.Email).ToList();
-                case "email_ascd":
-                    return list.OrderBy(g => g.Email).ToList();
-                case "time_of_check_in_desc":
-                    return list.OrderByDescending(g => g.TimeOfCheckIn).ToList();
-                case "time_of_check_in_ascd":
-                    return list.OrderBy(g => g.TimeOfCheckIn).ToList();
-                default:
-                    return list.OrderBy(g => g.LastName).ToList();
-            }
+            EventGuest eventGuest = repository.GetEventGuestById(id);
+            if (eventGuest == null) return View(repository.GetOrderedEventGuestListWithSearchParam("", ""));
+            ViewBag.AlertMessage = EventGuestConstants.CHECK_IN_WELCOME_BACK;
+            if (!repository.CheckInEventGuestToEvent(eventGuest)) return View(repository.GetOrderedEventGuestListWithSearchParam("", ""));
+            ViewBag.AlertMessage = EventGuestConstants.CHECK_IN_SUCCESS; 
+            return View(repository.GetOrderedEventGuestListWithSearchParam("", ""));
         }
 
         public ActionResult RegisterGuest()
@@ -152,24 +121,21 @@ namespace RollCallApplication.Controllers
             ViewBag.Message = EventGuestConstants.REGISTRATION_DEFAULT;
             ViewBag.EventName = Settings.Default.EventName;
             ViewBag.FailedCheckInPreregister = true;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(eventGuest);
+            if(emailAlreadyExistsForEventGuest(eventGuest.Email))
             {
-                if(emailAlreadyExistsForEventGuest(eventGuest.Email))
-                {
-                    EventGuest existingGuest = db.EventGuests.FirstOrDefault(g => g.Email.Equals(eventGuest.Email));
-                    String errorMessage = generateExistingGuestErrorMessage(existingGuest);
-                    ModelState.AddModelError("Email", errorMessage);
-                    return View(eventGuest);
-                }
-                if(eventGuest.Preregistered == false) eventGuest.TimeOfCheckIn = GetCurrentDateTimeWithOffSet();
-                addEventGuestToDbContext(eventGuest);
-                ModelState.Clear();
-                if (eventGuest.Preregistered == false) ViewBag.SuccessfulCheckIn = true;
-                else ViewBag.SuccessfulPreregister = true;
-                ViewBag.FailedCheckInPreregister = null;
-                return View(new EventGuest { });
+                EventGuest existingGuest = db.EventGuests.FirstOrDefault(g => g.Email.Equals(eventGuest.Email));
+                String errorMessage = generateExistingGuestErrorMessage(existingGuest);
+                ModelState.AddModelError("Email", errorMessage);
+                return View(eventGuest);
             }
-            return View(eventGuest);
+            if(eventGuest.Preregistered == false) eventGuest.TimeOfCheckIn = service.GetCurrentDateTimeWithOffSet();
+            addEventGuestToDbContext(eventGuest);
+            ModelState.Clear();
+            if (eventGuest.Preregistered == false) ViewBag.SuccessfulCheckIn = true;
+            else ViewBag.SuccessfulPreregister = true;
+            ViewBag.FailedCheckInPreregister = null;
+            return View(new EventGuest { });
         }
 
         private Boolean emailAlreadyExistsForEventGuest(String email)
@@ -296,19 +262,6 @@ namespace RollCallApplication.Controllers
             db.SaveChanges();
         }
 
-        [SimpleMembership]
-        public ActionResult GuestListIndex(String sortOrder, String searchParam)
-        {
-            Trace.WriteLine("GET EventGuests/GuestListIndex");
-            ViewBag.Title = "Guest List";
-            ViewBag.Message = "List of all Event Guests.";
-            ViewBag.TotalCheckedInGuests = numberOfCheckInGuests();
-            ViewBag.SortOrder = (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
-            ViewBag.SearchParam = searchParam;
-            List<EventGuest> guestList = getEventGuestsWithSearchParam(searchParam);
-            return View(orderListOfGuests(sortOrder, guestList));
-        }
-
         private int numberOfCheckInGuests()
         {
             return db.EventGuests.Count(g => g.TimeOfCheckIn != null);
@@ -414,34 +367,9 @@ namespace RollCallApplication.Controllers
         public FileResult DownloadListAsCsv()
         {
             Trace.WriteLine("GET EventGuest/DownloadListAsCsv");
-            IEnumerable<EventGuest> rows = db.EventGuests;
-
-            StringBuilder csv = new StringBuilder();
-            csv = WriteLineInCsvStringBuilder(csv, 
-                "First Name", 
-                "Last Name", 
-                "Email", 
-                "Preregistered",
-                "Check in Time",
-                "Won Check In Raffle",
-                "Extra Raffle Entry",
-                "Won Extra Raffle Entry");
-            foreach (EventGuest row in rows)
-            {
-                WriteLineInCsvStringBuilder(csv, 
-                    row.FirstName, 
-                    row.LastName, 
-                    row.Email, 
-                    row.Preregistered.ToString(), 
-                    row.TimeOfCheckIn.ToString(),
-                    row.WonCheckInRaffle.ToString(), 
-                    row.ExtraRaffleEntry.ToString(), 
-                    row.WonExtraRaffleEntry.ToString());
-            }
-
-            var data = Encoding.UTF8.GetBytes(csv.ToString());
-            string filename = "rollCallExtract-" + GetCurrentDateTimeWithOffSet().ToString() + ".csv";
-            return File(data, "text/csv", filename);
+            byte[] csvData = service.FullEventGuestListInCsv();
+            String fileName = service.CsvEventGuestFileName();
+            return File(csvData, "text/csv", fileName);
         }
 
         [SimpleMembership]
@@ -515,30 +443,7 @@ namespace RollCallApplication.Controllers
             }
             return checkInList;
         }
-
-        private StringBuilder WriteLineInCsvStringBuilder(StringBuilder csv, String columnOne,
-                String columnTwo, String columnThree, String columnFour, String columnFive,
-                String columnSix, String columnSeven, String columnEight)
-        {
-            csv.Append(columnOne).Append(',');
-            csv.Append(columnTwo).Append(',');
-            csv.Append(columnThree).Append(',');
-            csv.Append(columnFour).Append(',');
-            csv.Append(columnFive).Append(',');
-            csv.Append(columnSix).Append(',');
-            csv.Append(columnSeven).Append(',');
-            csv.Append(columnEight).Append(',');
-            csv.AppendLine();
-            return csv;
-        }
-
-        private DateTime GetCurrentDateTimeWithOffSet()
-        {
-            DateTime currentDateTime = DateTime.Now.ToUniversalTime();
-            TimeSpan utcOffset = new TimeSpan(Settings.Default.TimeZoneOffsetHours, 0, 0);
-            return currentDateTime.Subtract(utcOffset);
-        }
-
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();

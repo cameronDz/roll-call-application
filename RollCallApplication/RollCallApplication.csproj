@@ -174,7 +174,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Repository\EventGuestRepository.cs" />
+    <Compile Include="Repositories\EventGuestRepository.cs" />
+    <Compile Include="Services\EventGuestService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
