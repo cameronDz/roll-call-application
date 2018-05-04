@@ -1,8 +1,12 @@
-﻿using RollCallApplication.DAL;
+﻿using LumenWorks.Framework.IO.Csv;
+using RollCallApplication.Constants;
+using RollCallApplication.DAL;
 using RollCallApplication.Models;
 using RollCallApplication.Properties;
+using RollCallApplication.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,11 +16,14 @@ namespace RollCallApplication.Services
 {
     public class EventGuestService
     {
-        private RollCallContext context = new RollCallContext();
-
+        private EventGuestRepository repository; 
+        public EventGuestService(EventGuestRepository repository)
+        {
+            this.repository = repository;
+        }
         public byte[] FullEventGuestListInCsv()
         {
-            IEnumerable<EventGuest> rows = context.EventGuests;
+            IEnumerable<EventGuest> rows = repository.GetOrderedEventGuestListWithSearchParam("", "");
             StringBuilder csv = new StringBuilder();
             csv = WriteLineInCsvStringBuilder(csv,
                     "First Name",
@@ -42,6 +49,10 @@ namespace RollCallApplication.Services
             var data = Encoding.UTF8.GetBytes(csv.ToString());
             return data; 
         }
+        public String GetCurrentOrDefaultSortOrder(String sortOrder)
+        {
+            return (String.IsNullOrEmpty(sortOrder) ? "last_name_ascd" : sortOrder);
+        }
         public String CsvEventGuestFileName()
         {
             return "rollCallExtract-" + GetCurrentDateTimeWithOffSet().ToString() + ".csv";
@@ -66,6 +77,60 @@ namespace RollCallApplication.Services
             csv.Append(columnEight).Append(',');
             csv.AppendLine();
             return csv;
+        }
+        public CsvUploadStatus UploadGuestsFromCsvFile(HttpPostedFileBase upload)
+        {
+            CsvUploadStatus status = new CsvUploadStatus();
+            status.SuccessfulUpload = false;
+            status.ErrorMessage = EventGuestConstants.LOAD_REGISTRANTS_UPLOAD_ERROR;
+            if (upload == null || upload.ContentLength <= 0) return status;
+            status.ErrorMessage = EventGuestConstants.LOAD_REGISTRANTS_FILE_TYPE_ERROR;
+            if (!upload.FileName.EndsWith(".csv")) return status;
+            DataTable csvTable = createNewDataTableFromUpload(upload);
+            int[] firstLastEmailArray = createIntArrayForFirstLastEmailColumns(csvTable);
+            if (intArrayHasNegativeValues(firstLastEmailArray)) return status;
+            int registeredCount = 0;
+            int notRegisteredCount = 0;
+            foreach (DataRow row in csvTable.Rows)
+            {
+                EventGuest tableGuest = repository.CreateEventGuestFromRowData(row, firstLastEmailArray);
+                if (repository.AddEventGuestToDbContext(tableGuest)) registeredCount++;
+                else notRegisteredCount++;
+            }
+            status.SuccessfulUpload = true;
+            status.EventGuestsUploaded = registeredCount;
+            status.ColumnsNotUploaded = notRegisteredCount;
+            return status;
+        }
+        private DataTable createNewDataTableFromUpload(HttpPostedFileBase upload)
+        {
+            Stream stream = upload.InputStream;
+            DataTable csvTable = new DataTable();
+            using (CsvReader csvReader =
+                new CsvReader(new StreamReader(stream), true))
+            {
+                csvTable.Load(csvReader);
+            }
+            return csvTable;
+        }
+        private int[] createIntArrayForFirstLastEmailColumns(DataTable csvTable)
+        {
+            int[] array = { -1, -1, -1 };
+            foreach (DataColumn col in csvTable.Columns)
+            {
+                if ("first name".Equals(col.ColumnName.ToLower()))
+                    array[0] = csvTable.Columns.IndexOf(col);
+                if ("last name".Equals(col.ColumnName.ToLower()))
+                    array[1] = csvTable.Columns.IndexOf(col);
+                if ("email".Equals(col.ColumnName.ToLower()))
+                    array[2] = csvTable.Columns.IndexOf(col);
+            }
+            return array;
+        }
+        private Boolean intArrayHasNegativeValues(int[] array)
+        {
+            foreach (int i in array) if (i < 0) return true;
+            return false;
         }
     }
 }
