@@ -52,10 +52,16 @@ Uner Resource Group, press "New..."
 Below are a list of wish list items for updates to the application. 
 
 - [ ] Graphical display of Event Guest check in traffic for a given day
-- [ ] Remove all logic for add/editing/removing entities from context out of Controller and into Repository
-- [ ] Remove all logic for services out of Controller and into Service
+- [ ] Update data model to have seperate tables for EventGuests and CheckInTime
+- [ ] Implement ViewModel through repository
+- [ ] Add Raffle activity/service back into application with own data model table logic
 
 ## Change Log
+
+###### 04 May 2018
+- Remove all logic for add/editing/removing entities from context out of Controller and into Repository
+- Remove all logic for services out of Controller and into Service
+- Removed Raffle activity/service
 
 ###### 29 April 2018
 - Sort/search functionality added to Admin index
