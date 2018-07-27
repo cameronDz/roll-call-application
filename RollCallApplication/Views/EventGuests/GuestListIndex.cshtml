@@ -76,7 +76,7 @@
                     <br />
                     @Html.ActionLink("Un-check In", "UnCheckInGuest", new { id = item.GuestId })
                 }
-                @if(item.WonExtraRaffleEntry == false)
+                @*@if(item.WonExtraRaffleEntry == false)
                 {
                     <br/>
                     if (item.ExtraRaffleEntry == false)
@@ -87,7 +87,7 @@
                     {
                         @Html.ActionLink("Remove Extra Raffle", "InvertGuestExtraRaffleEntry", new { id = item.GuestId })
                     }
-                }
+                }*@
             </td>
         </tr>
     }
