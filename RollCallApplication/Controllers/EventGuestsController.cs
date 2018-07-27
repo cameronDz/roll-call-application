@@ -126,9 +126,9 @@ namespace RollCallApplication.Controllers
             ViewBag.EventName = Settings.Default.EventName;
             ViewBag.FailedCheckInPreregister = true;
             if (!ModelState.IsValid) return View(eventGuest);
-            if(repository.AddEventGuestToDbContext(eventGuest))
+            if(!repository.AddEventGuestToDbContext(eventGuest))
             {
-                String errorMessage = ViewBag.Message = EventGuestConstants.REGISTRATION_EXISTING_ERROR; 
+                String errorMessage = ViewBag.Message = EventGuestConstants.REGISTRATION_EXISTING_ERROR + eventGuest.Email; 
                 return View(eventGuest);
             }
             if (eventGuest.Preregistered == false) ViewBag.SuccessfulCheckIn = true;

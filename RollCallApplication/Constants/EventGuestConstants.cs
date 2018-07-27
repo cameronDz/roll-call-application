@@ -14,7 +14,7 @@ namespace RollCallApplication.Constants
         public static readonly String CHECK_IN_SUCCESS = "Successfully checked into the event!";
         public static readonly String CHECK_IN_WELCOME_BACK =  "Welcome back to the event!";
         public static readonly String REGISTRATION_DEFAULT = "Register or Check In an unregistered Guest for Event.";
-        public static readonly String REGISTRATION_EXISTING_ERROR = "Failed Registration. Email already registered on database under:";
+        public static readonly String REGISTRATION_EXISTING_ERROR = "Failed Registration. Email already registered on database under: ";
         public static readonly String LOAD_REGISTRANTS_DEFAULT = "Load Registration List through .csv file.";
         public static readonly String LOAD_REGISTRANTS_FILE_TYPE_ERROR = "Failed Upload. Unable to load registrants due to upload not being .csv file.";
         public static readonly String LOAD_REGISTRANTS_MISSING_COLUMN_ERROR = "Failed Upload. Unable to load registrants due to column name issue is .csv file.";
