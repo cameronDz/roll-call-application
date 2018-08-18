@@ -55,6 +55,7 @@ Below are a list of wish list items for updates to the application.
 - [ ] Update data model to have seperate tables for EventGuests and CheckInTime
 - [ ] Implement ViewModel through repository
 - [ ] Add Raffle activity/service back into application with own data model table logic
+- [ ] Add application icon/logo to pages (currently in images directory)
 
 ## Change Log
 
